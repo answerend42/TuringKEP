@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[oc]
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+
+# uv
+uv.lock
+.python-version
+
+# Ruff
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
