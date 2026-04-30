@@ -144,3 +144,36 @@ Task 1 Ch2 知识表示：实体 21→46，关系 7→10，三元组 43→110。
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: Task 3: 开放域实体发现 — 打破封闭世界
+
+**Date**: 2026-04-30
+**Task**: Task 3: 开放域实体发现 — 打破封闭世界
+**Branch**: `main`
+
+### Summary
+
+NER 阶段内嵌 entity_discovery，自动发现 22 个新实体，9 个进入三元组。关系中实体 28->38 (+36%)，三元组 107->119 (+11%)。实体发现仍有噪声，需后续迭代替换为更可靠方法。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `dc56eb9` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
