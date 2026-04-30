@@ -58,6 +58,12 @@ def build_parser() -> argparse.ArgumentParser:
         ],
         help="Which workflow to run.",
     )
+    parser.add_argument(
+        "--method",
+        choices=["all", "gazetteer", "crf", "hmm", "hmmlearn"],
+        default="all",
+        help="NER method selection (default: all).",
+    )
     return parser
 
 
@@ -66,8 +72,8 @@ def build_parser() -> argparse.ArgumentParser:
 # ---------------------------------------------------------------------------
 
 
-def _cmd_pipeline() -> None:
-    summary = run_pipeline()
+def _cmd_pipeline(method: str = "all") -> None:
+    summary = run_pipeline(ner_method=method)
     print("Pipeline finished.")
     print(f"Documents: {summary['document_count']}")
     print(f"Sentences: {summary['sentence_count']}")
@@ -80,13 +86,13 @@ def _cmd_pipeline() -> None:
     print(f"Metrics: {summary['metrics_path']}")
 
 
-def _cmd_extract() -> None:
+def _cmd_extract(method: str = "all") -> None:
     ctx = PipelineContext(schema=load_domain_schema())
     run_extract_stage(ctx)
     print(f"Extracted documents: {len(ctx.documents)}")
 
 
-def _cmd_preprocess() -> None:
+def _cmd_preprocess(method: str = "all") -> None:
     ctx = PipelineContext(schema=load_domain_schema())
     ctx.documents = load_document_records(EXTRACTED_DIR / "documents.jsonl")
     run_preprocess_stage(ctx)
@@ -94,17 +100,18 @@ def _cmd_preprocess() -> None:
     print(f"Sentences: {len(ctx.sentences)}")
 
 
-def _cmd_ner() -> None:
+def _cmd_ner(method: str = "all") -> None:
     ctx = PipelineContext(schema=load_domain_schema())
     ctx.documents = load_document_records(EXTRACTED_DIR / "documents.jsonl")
     ctx.sentences = load_sentence_records(PREPROCESSED_DIR / "sentences.jsonl")
+    ctx.ner_method = method
     run_ner_stage(ctx)
     print(f"Documents: {len(ctx.documents)}")
     print(f"Sentences: {len(ctx.sentences)}")
     print(f"Entity mentions: {len(ctx.merged_mentions)}")
 
 
-def _cmd_link() -> None:
+def _cmd_link(method: str = "all") -> None:
     ctx = PipelineContext(schema=load_domain_schema())
     ctx.documents = load_document_records(EXTRACTED_DIR / "documents.jsonl")
     ctx.sentences = load_sentence_records(PREPROCESSED_DIR / "sentences.jsonl")
@@ -115,7 +122,7 @@ def _cmd_link() -> None:
     print(f"Linked mentions: {sum(1 for m in ctx.linked_mentions if not m.is_nil)}")
 
 
-def _cmd_relation() -> None:
+def _cmd_relation(method: str = "all") -> None:
     ctx = PipelineContext(schema=load_domain_schema())
     ctx.documents = load_document_records(EXTRACTED_DIR / "documents.jsonl")
     ctx.sentences = load_sentence_records(PREPROCESSED_DIR / "sentences.jsonl")
@@ -126,7 +133,7 @@ def _cmd_relation() -> None:
     print(f"Triples: {len(ctx.asserted_triples)}")
 
 
-def _cmd_reason() -> None:
+def _cmd_reason(method: str = "all") -> None:
     ctx = PipelineContext(schema=load_domain_schema())
     ctx.documents = load_document_records(EXTRACTED_DIR / "documents.jsonl")
     ctx.sentences = load_sentence_records(PREPROCESSED_DIR / "sentences.jsonl")
@@ -141,7 +148,7 @@ def _cmd_reason() -> None:
     print(f"Reasoning summary: {ctx.reasoning_summary['inferred_triple_count']} inferred facts")
 
 
-def _cmd_store() -> None:
+def _cmd_store(method: str = "all") -> None:
     ctx = PipelineContext(schema=load_domain_schema())
     ctx.documents = load_document_records(EXTRACTED_DIR / "documents.jsonl")
     ctx.sentences = load_sentence_records(PREPROCESSED_DIR / "sentences.jsonl")
@@ -159,7 +166,7 @@ def _cmd_store() -> None:
     print(f"Query examples: {ctx.store_summary['paths']['query_examples']}")
 
 
-def _cmd_graph() -> None:
+def _cmd_graph(method: str = "all") -> None:
     ctx = PipelineContext(schema=load_domain_schema())
     ctx.documents = load_document_records(EXTRACTED_DIR / "documents.jsonl")
     ctx.sentences = load_sentence_records(PREPROCESSED_DIR / "sentences.jsonl")
@@ -175,7 +182,7 @@ def _cmd_graph() -> None:
     print("Focused graph HTML: outputs/08_graph/turing_kg_focus.html")
 
 
-def _cmd_metrics() -> None:
+def _cmd_metrics(method: str = "all") -> None:
     ensure_runtime_dirs()
     ctx = PipelineContext(schema=load_domain_schema())
     ctx.documents = load_document_records(EXTRACTED_DIR / "documents.jsonl")
@@ -198,7 +205,7 @@ def _cmd_metrics() -> None:
     print(f"Metrics: {summary['metrics_path']}")
 
 
-def _cmd_legacy_wikidata() -> None:
+def _cmd_legacy_wikidata(method: str = "all") -> None:
     output_path = run_legacy_demo()
     print(f"Legacy demo written to {output_path}")
 
@@ -229,5 +236,5 @@ def main() -> int:
     if handler is None:
         print(f"Unknown command: {args.command}")
         return 1
-    handler()
+    handler(method=args.method if hasattr(args, "method") else "all")
     return 0

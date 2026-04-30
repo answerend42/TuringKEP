@@ -323,9 +323,11 @@ class CRFExtractor:
 
 def merge_mentions(
     gazetteer_mentions: list[MentionRecord],
-    crf_mentions: list[MentionRecord],
+    *crf_mentions: list[MentionRecord],
 ) -> list[MentionRecord]:
-    combined = gazetteer_mentions + crf_mentions
+    combined = list(gazetteer_mentions)
+    for mentions in crf_mentions:
+        combined.extend(mentions)
     grouped: dict[str, list[MentionRecord]] = defaultdict(list)
     for mention in combined:
         grouped[mention.sentence_id].append(mention)

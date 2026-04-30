@@ -10,7 +10,9 @@ from .evaluation import compute_pipeline_metrics
 from .graph import build_graph_payload, generate_graph_html
 from .ingestion import discover_book_files, extract_documents
 from .linking import link_mentions
+from .hmm_ner import HMMExtractor, HMMLearnExtractor
 from .ner import CrfResult, GazetteerExtractor, CRFExtractor, merge_mentions
+from .ner_comparison import compute_ner_comparison
 from .paths import (
     EVALUATION_DIR,
     EXTRACTED_DIR,
@@ -46,6 +48,9 @@ class PipelineContext:
     sentences: list[SentenceRecord] = field(default_factory=list)
     gazetteer_mentions: list[MentionRecord] = field(default_factory=list)
     crf_result: CrfResult | None = None
+    hmm_result: CrfResult | None = None
+    hmmlearn_result: CrfResult | None = None
+    ner_method: str = "all"
     merged_mentions: list[MentionRecord] = field(default_factory=list)
     linked_mentions: list[MentionRecord] = field(default_factory=list)
     asserted_triples: list[TripleRecord] = field(default_factory=list)
@@ -75,7 +80,7 @@ def run_preprocess_stage(ctx: PipelineContext) -> None:
 
 
 def run_ner_stage(ctx: PipelineContext) -> None:
-    """实体识别阶段：词典匹配 + CRF 弱监督。"""
+    """实体识别阶段：词典 + CRF + HMM（手写） + HMM（hmmlearn）。"""
     gazetteer_ext = GazetteerExtractor(ctx.schema)
     ctx.gazetteer_mentions = gazetteer_ext.extract(ctx.sentences)
     save_records(NER_DIR / "gazetteer_mentions.jsonl", ctx.gazetteer_mentions)
@@ -85,9 +90,43 @@ def run_ner_stage(ctx: PipelineContext) -> None:
     write_json(EVALUATION_DIR / "crf_metrics.json", ctx.crf_result.metrics)
     save_records(NER_DIR / "crf_mentions.jsonl", ctx.crf_result.mentions)
 
-    ctx.merged_mentions = merge_mentions(ctx.gazetteer_mentions, ctx.crf_result.mentions)
+    hmm_ext = HMMExtractor(alpha=0.01)
+    ctx.hmm_result = hmm_ext.extract(ctx.sentences, ctx.gazetteer_mentions)
+    save_records(NER_DIR / "hmm_mentions.jsonl", ctx.hmm_result.mentions)
+
+    hmmlearn_ext = HMMLearnExtractor(random_state=42)
+    ctx.hmmlearn_result = hmmlearn_ext.extract(ctx.sentences, ctx.gazetteer_mentions)
+    save_records(NER_DIR / "hmmlearn_mentions.jsonl", ctx.hmmlearn_result.mentions)
+
+    # 四方法合并
+    method = ctx.ner_method
+    if method == "gazetteer":
+        ctx.merged_mentions = ctx.gazetteer_mentions
+    elif method == "crf":
+        ctx.merged_mentions = ctx.crf_result.mentions
+    elif method == "hmm":
+        ctx.merged_mentions = ctx.hmm_result.mentions
+    elif method == "hmmlearn":
+        ctx.merged_mentions = ctx.hmmlearn_result.mentions
+    else:
+        ctx.merged_mentions = merge_mentions(
+            ctx.gazetteer_mentions,
+            ctx.crf_result.mentions,
+            ctx.hmm_result.mentions,
+            ctx.hmmlearn_result.mentions,
+        )
     save_records(NER_DIR / "entity_mentions.jsonl", ctx.merged_mentions)
     ctx.crf_metrics = ctx.crf_result.metrics
+
+    # 生成四方法对比报告
+    ner_report = compute_ner_comparison(
+        ctx.gazetteer_mentions,
+        ctx.crf_result.mentions,
+        ctx.hmm_result.mentions,
+        ctx.hmmlearn_result.mentions,
+        ctx.merged_mentions,
+    )
+    write_json(EVALUATION_DIR / "ner_comparison.json", ner_report)
 
 
 def run_linking_stage(ctx: PipelineContext) -> None:
@@ -218,11 +257,11 @@ def run_metrics_stage(ctx: PipelineContext) -> None:
     write_json(OUTPUT_DIR / "summary.json", ctx.summary)
 
 
-def run_pipeline() -> dict:
+def run_pipeline(ner_method: str = "all") -> dict:
     """运行完整流水线：所有阶段顺序执行。"""
     ensure_runtime_dirs()
     jieba.initialize()
-    ctx = PipelineContext(schema=load_domain_schema())
+    ctx = PipelineContext(schema=load_domain_schema(), ner_method=ner_method)
     run_extract_stage(ctx)
     run_preprocess_stage(ctx)
     run_ner_stage(ctx)

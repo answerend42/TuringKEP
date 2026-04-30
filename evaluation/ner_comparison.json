@@ -1,0 +1,98 @@
+{
+  "method_stats": {
+    "gazetteer": {
+      "mention_count": 8861,
+      "unique_texts": 118,
+      "entity_type_distribution": {
+        "Person": 6003,
+        "Concept": 652,
+        "Artifact": 772,
+        "Organization": 807,
+        "Event": 60,
+        "Place": 567
+      },
+      "source_distribution": {
+        "gazetteer": 8861
+      }
+    },
+    "crf": {
+      "mention_count": 7751,
+      "unique_texts": 192,
+      "entity_type_distribution": {
+        "Person": 5264,
+        "Concept": 517,
+        "Artifact": 629,
+        "Organization": 786,
+        "Event": 55,
+        "Place": 500
+      },
+      "source_distribution": {
+        "crf": 7751
+      }
+    },
+    "hmm_handwritten": {
+      "mention_count": 9893,
+      "unique_texts": 1514,
+      "entity_type_distribution": {
+        "Person": 6038,
+        "Event": 1075,
+        "Concept": 660,
+        "Artifact": 739,
+        "Organization": 863,
+        "Place": 518
+      },
+      "source_distribution": {
+        "hmm": 9893
+      }
+    },
+    "hmm_hmmlearn": {
+      "mention_count": 436,
+      "unique_texts": 352,
+      "entity_type_distribution": {
+        "Event": 242,
+        "Concept": 190,
+        "Artifact": 3,
+        "Place": 1
+      },
+      "source_distribution": {
+        "hmmlearn": 436
+      }
+    }
+  },
+  "aggregate": {
+    "merged_count": 10218,
+    "gazetteer_baseline": 8861,
+    "method_contributions": {
+      "gazetteer": 8861,
+      "crf": 7751,
+      "hmm_handwritten": 9893,
+      "hmm_hmmlearn": 436
+    }
+  },
+  "overlap_matrix": {
+    "gazetteer": {
+      "gazetteer": 8861,
+      "crf": 7415,
+      "hmm_handwritten": 7969,
+      "hmm_hmmlearn": 0
+    },
+    "crf": {
+      "gazetteer": 7415,
+      "crf": 7751,
+      "hmm_handwritten": 7230,
+      "hmm_hmmlearn": 0
+    },
+    "hmm_handwritten": {
+      "gazetteer": 7969,
+      "crf": 7230,
+      "hmm_handwritten": 9893,
+      "hmm_hmmlearn": 0
+    },
+    "hmm_hmmlearn": {
+      "gazetteer": 0,
+      "crf": 0,
+      "hmm_handwritten": 0,
+      "hmm_hmmlearn": 436
+    }
+  }
+}
