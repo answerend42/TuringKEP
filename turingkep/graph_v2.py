@@ -266,7 +266,7 @@ const cy = cytoscape({{
       {{ selector: 'node:selected', style: {{ 'border-color': '#fff', 'border-width': 3, 'text-outline-color': '#fff', 'text-outline-width': 1 }} }},
       {{ selector: 'edge:selected', style: {{ 'line-color': '#98cdf2', 'target-arrow-color': '#98cdf2', 'width': 4 }} }},
     ],
-    layout: {{ name: 'dagre', rankDir: 'LR', spacingFactor: 0.9, nodeDimensionsIncludeLabels: true }},
+    layout: {{ name: 'concentric', concentric: function(node) {{ return node.data('value') || 1; }}, minNodeSpacing: 40 }},
     wheelSensitivity: 0.3,
   }});
 
@@ -297,9 +297,12 @@ const cy = cytoscape({{
   cy.style().selector('.dimmed').style({{ 'opacity': 0.15 }}).update();
   cy.style().selector('.highlighted').style({{ 'border-color': '#fff', 'border-width': 3 }}).update();
 
+console.log('Cytoscape nodes:', cyNodes.length, 'edges:', cyEdges.length);
+document.getElementById('mynetwork').style.minHeight = '500px';
+
 // === Tab 2: Relations ===
-(function() {{
-  const edges = {data_json}.edges;
+try {{ (function() {{
+  const edges = DATA.edges;
   const srcCounts = {{}};
   edges.forEach(e => srcCounts[e.source] = (srcCounts[e.source]||0)+1);
   document.getElementById('source-chart').innerHTML = Object.entries(srcCounts).map(([s,c]) =>
@@ -312,10 +315,10 @@ const cy = cytoscape({{
   document.getElementById('confidence-chart').innerHTML = confBuckets.map((b,i) =>
     `<div class="flex items-center"><span class="w-16">≥${{b.toFixed(1)}}</span><div class="flex-1 mx-3 h-4 rounded" style="background:#222a3d"><div class="h-4 rounded" style="width:${{confCounts[i]*100/maxConf}}%;background:#dd8b2f"></div></div><span style="color:#8b9198">${{confCounts[i]}}</span></div>`
   ).join('');
-}})();
+}}); }} catch(e) {{ console.error('Tab2 error:', e); }}
 
 // === Tab 3: Reasoning ===
-(function() {{
+try {{ (function() {{
   const reasoning = {reasoning_json};
   const rules = reasoning.rules || [];
   const dist = reasoning.inferred_relation_distribution || {{}};
@@ -330,10 +333,10 @@ const cy = cytoscape({{
     <h3 class="text-sm font-semibold mb-3 mt-6" style="color:#8b9198">推断关系分布</h3>
     ${{Object.entries(dist).map(([k,v]) => `<div class="text-sm mb-1">${{k}}: <strong>${{v}}</strong></div>`).join('')}}
   `;
-}})();
+}}); }} catch(e) {{ console.error('Tab3 error:', e); }}
 
 // === Tab 4: NER Comparison ===
-(function() {{
+try {{ (function() {{
   const ner = {ner_json};
   const methods = ner.method_stats || {{}};
   const entries = Object.entries(methods);
@@ -352,17 +355,17 @@ const cy = cytoscape({{
       Overlap Matrix: ${{JSON.stringify(ner.overlap_matrix || {{}}) }}
     </div>`
   );
-}})();
+}}); }} catch(e) {{ console.error('Tab4 error:', e); }}
 
 // === Tab 5: Snapshots ===
-(function() {{
+try {{ (function() {{
   const snaps = {snapshots_json};
   if (snaps.length) {{
     const container = document.getElementById('tab-analytics');
     const html = `<div class="mt-6"><h3 class="text-sm font-semibold mb-3" style="color:#8b9198">迭代快照</h3><div class="space-y-2 text-sm">${{snaps.map(s => `<div class="stat-card flex justify-between"><span>${{s.task}}</span><span style="color:#8b9198">${{s.triples}} triples · ${{s.entities_in_triples}} entities</span></div>`).join('')}}</div></div>`;
     container.insertAdjacentHTML('beforeend', html);
   }}
-}})();
+}}); }} catch(e) {{ console.error('Tab5 error:', e); }}
 </script>
 </body>
 </html>"""
