@@ -13,7 +13,7 @@ from .linking import link_mentions
 from .hmm_ner import HMMExtractor, HMMLearnExtractor
 from .ner import CrfResult, GazetteerExtractor, CRFExtractor, merge_mentions
 from .ner_comparison import compute_ner_comparison
-from .open_entity import discover_new_entities, extend_schema_with_discoveries
+from .open_entity import discover_new_entities, extend_schema_with_discoveries, validate_discovered_entities
 from .disambiguation import cluster_entity_fragments
 from .relation_methods import extract_by_cooccurrence, extract_by_dependency_path
 from .paths import (
@@ -135,9 +135,12 @@ def run_ner_stage(ctx: PipelineContext) -> None:
     )
     write_json(EVALUATION_DIR / "ner_comparison.json", ner_report)
 
-    # 开放域实体发现：从文本中发现 schema 之外的新实体
-    new_entities = discover_new_entities(
+    # 开放域实体发现 + 验证
+    candidates = discover_new_entities(
         ctx.documents, ctx.schema, min_confidence=0.50, max_new=80
+    )
+    new_entities = validate_discovered_entities(
+        ctx.documents, candidates, ctx.schema, min_context_diversity=5
     )
     if new_entities:
         extended_schema = extend_schema_with_discoveries(ctx.schema, new_entities)
@@ -192,6 +195,10 @@ def run_linking_stage(ctx: PipelineContext) -> None:
             central_entity_id=ctx.schema.central_entity_id,
             entity_hierarchy=ctx.schema.entity_hierarchy,
         )
+
+    # 后处理：移除只链接到自己的发现实体
+    removed = _remove_self_linking_discoveries(ctx)
+    ctx.fragment_merge_count = len(removed)
 
     save_records(LINKING_DIR / "linked_mentions.jsonl", ctx.linked_mentions)
 
@@ -392,3 +399,37 @@ def run_pipeline(ner_method: str = "all") -> dict:
     run_graph_stage(ctx)
     run_metrics_stage(ctx)
     return ctx.summary
+
+
+def _remove_self_linking_discoveries(ctx: PipelineContext) -> set[str]:
+    """移除只链接到自己的发现实体。"""
+    from collections import defaultdict
+    by_eid: dict[str, list[MentionRecord]] = defaultdict(list)
+    for m in ctx.linked_mentions:
+        if m.linked_entity_id:
+            by_eid[m.linked_entity_id].append(m)
+
+    to_remove: set[str] = set()
+    for eid, mentions in by_eid.items():
+        if not eid.startswith("discovered_"):
+            continue
+        entity = ctx.schema.entity_by_id.get(eid)
+        if not entity:
+            continue
+        self_match = sum(1 for m in mentions if m.text.strip() == entity.name)
+        if len(mentions) >= 3 and self_match / len(mentions) > 0.8:
+            to_remove.add(eid)
+
+    if to_remove:
+        ctx.linked_mentions = [
+            m for m in ctx.linked_mentions
+            if m.linked_entity_id not in to_remove
+        ]
+        ctx.schema = DomainSchema(
+            entity_types=ctx.schema.entity_types,
+            entities=[e for e in ctx.schema.entities if e.id not in to_remove],
+            relations=ctx.schema.relations,
+            central_entity_id=ctx.schema.central_entity_id,
+            entity_hierarchy=ctx.schema.entity_hierarchy,
+        )
+    return to_remove
