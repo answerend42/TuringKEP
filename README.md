@@ -4,13 +4,11 @@
 
 ## 查看知识图谱
 
-> 打开 [`turing_kg.html`](turing_kg.html) 即可看到完整的交互式知识图谱。
+👉 **[点击这里直接查看交互式知识图谱](https://refined-github-html-preview.kidonng.workers.dev/answerend42/TuringKEP/raw/refs/heads/main/turing_kg.html)**
 
-- **在线查看**：如果已启用 GitHub Pages，访问 `https://answerend42.github.io/TuringKEP/turing_kg.html`
-- **本地查看**：克隆仓库后，直接用浏览器打开 `turing_kg.html`
-- **重新生成**：运行 `python main.py pipeline` 后，产出在 `outputs/08_graph/turing_kg.html`
+> 或克隆仓库后，用浏览器打开 `turing_kg.html`。运行 `python main.py pipeline` 可重新生成。
 
-图谱基于 Cytoscape.js 渲染，包含 5 个 Tab：知识图谱主视图、关系分析、推理链、NER 四方法对比、分析仪表盘。点击节点可高亮其邻域。
+图谱基于 Cytoscape.js 渲染，包含 5 个 Tab：知识图谱主视图（点击节点高亮邻域＋搜索）、关系分析（分布图＋置信度）、推理链、NER 四方法对比、分析仪表盘。
 
 ## 快速开始
 
