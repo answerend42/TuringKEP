@@ -101,10 +101,14 @@ def _spacy_ner_candidates(texts: list[str]) -> dict[str, list[str]]:
     except Exception:
         return {}
 
-    # 批处理：每次处理 5000 字符的块
+    # 在中文文本中过滤英文常见词（spaCy 可能误标）
+    english_noise = {"the", "see", "for", "and", "was", "his", "had", "not",
+                     "but", "are", "has", "can", "its", "new", "one", "two",
+                     "of", "in", "to", "it", "is", "on", "at", "by", "or",
+                     "be", "as", "we", "an", "if", "my", "so", "up", "no"}
+
     candidates: dict[str, list[str]] = defaultdict(list)
     for text in texts:
-        # spaCy 对大文本分批处理
         chunk_size = 8000
         for start in range(0, len(text), chunk_size):
             chunk = text[start:start + chunk_size]
@@ -112,6 +116,8 @@ def _spacy_ner_candidates(texts: list[str]) -> dict[str, list[str]]:
             for ent in doc.ents:
                 name = ent.text.strip()
                 if len(name) < 2:
+                    continue
+                if name.lower() in english_noise:
                     continue
                 if ent.label_ in SPACY_NER_TYPE_MAP:
                     etype = SPACY_NER_TYPE_MAP[ent.label_]

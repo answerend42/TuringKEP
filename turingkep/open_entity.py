@@ -35,6 +35,12 @@ def validate_discovered_entities(
         name = entity.name
         if len(name) < 2 or name.isdigit():
             continue
+        # 过滤纯英文常见词（spaCy 在中文文本中可能误标）
+        if name.isascii() and len(name) <= 3 and name.lower() in {
+            "the", "see", "for", "and", "was", "his", "had", "not",
+            "but", "are", "has", "can", "its", "new", "one", "two",
+        }:
+            continue
         # 检查是否是已知实体的别名
         if name in known_names or name.lower() in known_names:
             continue
