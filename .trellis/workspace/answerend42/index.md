@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 7
+- **Total Sessions**: 8
 - **Last Active**: 2026-04-30
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~245 | Active |
+| `journal-1.md` | ~278 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 8 | 2026-04-30 | Task 6: Ch5 实体消歧 — TF-IDF聚类 + 碎片过滤 | `a09ad86` | `main` |
 | 7 | 2026-04-30 | Task 5: Ch9 知识推理 — 8 条规则 + 冲突消解 | `4b60878` | `main` |
 | 6 | 2026-04-30 | Task 4: Ch6 关系抽取 — 共现+模式词 + 依存路径 | `863e097` | `main` |
 | 5 | 2026-04-30 | Task 3: 开放域实体发现 — 打破封闭世界 | `dc56eb9` | `main` |
