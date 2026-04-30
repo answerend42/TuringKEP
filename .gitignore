@@ -15,6 +15,16 @@ uv.lock
 # Ruff
 .ruff_cache/
 
+# Generated artifacts
+outputs/
+
+# Internal (not for submission)
+feedback/
+notes.md
+improvement_roadmap.md
+task_plan.md
+raw_source/
+
 # IDE
 .idea/
 .vscode/

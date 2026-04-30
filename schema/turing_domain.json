@@ -1,0 +1,229 @@
+{
+  "central_entity_id": "person_alan_turing",
+  "entity_types": [
+    "Person",
+    "Organization",
+    "Place",
+    "Artifact",
+    "Concept",
+    "Event"
+  ],
+  "entities": [
+    {
+      "id": "person_alan_turing",
+      "name": "艾伦·图灵",
+      "aliases": ["图灵", "艾伦图灵", "Alan Turing", "Turing"],
+      "type": "Person",
+      "description": "英国数学家、逻辑学家、密码分析学家，提出图灵机与图灵测试。"
+    },
+    {
+      "id": "person_christopher_morcom",
+      "name": "克里斯托弗·莫克姆",
+      "aliases": ["克里斯托弗·莫克姆", "Christopher Morcom", "莫克姆"],
+      "type": "Person",
+      "description": "图灵学生时代的重要朋友，对图灵的思想成长产生影响。"
+    },
+    {
+      "id": "person_joan_clarke",
+      "name": "琼·克拉克",
+      "aliases": ["琼·克拉克", "Joan Clarke", "克拉克"],
+      "type": "Person",
+      "description": "英国密码分析学家，在布莱切利园与图灵共事。"
+    },
+    {
+      "id": "person_alonzo_church",
+      "name": "阿隆佐·丘奇",
+      "aliases": ["阿隆佐·丘奇", "Alonzo Church", "丘奇"],
+      "type": "Person",
+      "description": "美国逻辑学家，普林斯顿大学教授，图灵在普林斯顿时期的导师。"
+    },
+    {
+      "id": "person_max_newman",
+      "name": "马克斯·纽曼",
+      "aliases": ["马克斯·纽曼", "纽曼", "Max Newman"],
+      "type": "Person",
+      "description": "英国数学家，图灵的重要学术同事与支持者。"
+    },
+    {
+      "id": "person_john_von_neumann",
+      "name": "约翰·冯·诺伊曼",
+      "aliases": ["冯·诺伊曼", "John von Neumann", "冯诺依曼"],
+      "type": "Person",
+      "description": "数学家与计算机科学先驱，和图灵在计算理论发展上有共同影响。"
+    },
+    {
+      "id": "org_kings_college_cambridge",
+      "name": "剑桥大学国王学院",
+      "aliases": ["国王学院", "剑桥大学国王学院", "King's College", "King's College, Cambridge"],
+      "type": "Organization",
+      "description": "图灵接受本科教育并开展早期研究的重要学院。"
+    },
+    {
+      "id": "org_princeton_university",
+      "name": "普林斯顿大学",
+      "aliases": ["普林斯顿大学", "Princeton University", "普林斯顿"],
+      "type": "Organization",
+      "description": "图灵攻读博士并与丘奇交流的美国大学。"
+    },
+    {
+      "id": "org_bletchley_park",
+      "name": "布莱切利园",
+      "aliases": ["布莱切利园", "Bletchley Park", "布莱切利公园"],
+      "type": "Organization",
+      "description": "英国二战时期密码分析中心，图灵在此参与破译工作。"
+    },
+    {
+      "id": "org_gc_cs",
+      "name": "政府密码学校",
+      "aliases": ["政府密码学校", "Government Code and Cypher School", "GC&CS"],
+      "type": "Organization",
+      "description": "英国政府密码分析机构，与布莱切利园密切相关。"
+    },
+    {
+      "id": "org_university_of_manchester",
+      "name": "曼彻斯特大学",
+      "aliases": ["曼彻斯特大学", "University of Manchester", "曼大"],
+      "type": "Organization",
+      "description": "图灵后期从事计算机研究的重要机构。"
+    },
+    {
+      "id": "place_london",
+      "name": "伦敦",
+      "aliases": ["伦敦", "London"],
+      "type": "Place",
+      "description": "图灵出生地相关城市。"
+    },
+    {
+      "id": "place_cambridge",
+      "name": "剑桥",
+      "aliases": ["剑桥", "Cambridge"],
+      "type": "Place",
+      "description": "剑桥大学所在地。"
+    },
+    {
+      "id": "place_princeton",
+      "name": "普林斯顿",
+      "aliases": ["普林斯顿", "Princeton"],
+      "type": "Place",
+      "description": "普林斯顿大学所在地。"
+    },
+    {
+      "id": "artifact_enigma",
+      "name": "恩尼格玛密码机",
+      "aliases": ["恩尼格玛", "恩尼格玛密码机", "Enigma"],
+      "type": "Artifact",
+      "description": "二战时期德军使用的密码机，是图灵团队的重要破译对象。",
+      "tags": ["cipher_target"]
+    },
+    {
+      "id": "artifact_bombe",
+      "name": "炸弹机",
+      "aliases": ["炸弹机", "Bombe", "图灵炸弹机"],
+      "type": "Artifact",
+      "description": "用于辅助破译恩尼格玛密码的电机械设备。",
+      "tags": ["inventable_artifact", "codebreaking_tool"]
+    },
+    {
+      "id": "artifact_ace",
+      "name": "自动计算引擎",
+      "aliases": ["自动计算引擎", "ACE", "Automatic Computing Engine"],
+      "type": "Artifact",
+      "description": "图灵提出的早期计算机设计方案。",
+      "tags": ["inventable_artifact", "computing_machine"]
+    },
+    {
+      "id": "concept_turing_machine",
+      "name": "图灵机",
+      "aliases": ["图灵机", "Turing machine"],
+      "type": "Concept",
+      "description": "图灵提出的抽象计算模型。",
+      "tags": ["inventable_concept"]
+    },
+    {
+      "id": "concept_turing_test",
+      "name": "图灵测试",
+      "aliases": ["图灵测试", "Turing Test", "模仿游戏"],
+      "type": "Concept",
+      "description": "图灵提出的机器智能判定思想。",
+      "tags": ["inventable_concept"]
+    },
+    {
+      "id": "concept_decision_problem",
+      "name": "判定性问题",
+      "aliases": ["判定性问题", "Entscheidungsproblem"],
+      "type": "Concept",
+      "description": "希尔伯特提出的逻辑判定问题，图灵和丘奇分别给出不可判定证明。"
+    },
+    {
+      "id": "event_world_war_ii",
+      "name": "第二次世界大战",
+      "aliases": ["第二次世界大战", "二战", "World War II"],
+      "type": "Event",
+      "description": "图灵密码分析工作的重要历史背景。"
+    }
+  ],
+  "relations": [
+    {
+      "id": "born_in",
+      "label": "出生于",
+      "subject_types": ["Person"],
+      "object_types": ["Place"],
+      "patterns": ["出生于", "生于", "诞生于"],
+      "max_distance": 24
+    },
+    {
+      "id": "studied_at",
+      "label": "就读于",
+      "subject_types": ["Person"],
+      "object_types": ["Organization"],
+      "patterns": ["就读于", "考入", "入学", "迈入", "访学", "深造"],
+      "max_distance": 28
+    },
+    {
+      "id": "worked_at",
+      "label": "工作于",
+      "subject_types": ["Person"],
+      "object_types": ["Organization"],
+      "patterns": ["任职于", "供职于", "加入", "任教", "工作", "共事"],
+      "max_distance": 30
+    },
+    {
+      "id": "collaborated_with",
+      "label": "合作",
+      "subject_types": ["Person"],
+      "object_types": ["Person"],
+      "patterns": ["合作", "共事", "一起研究", "一起工作"],
+      "subject_direction": "either",
+      "object_direction": "either",
+      "max_distance": 30,
+      "symmetric": true
+    },
+    {
+      "id": "developed",
+      "label": "提出或研制",
+      "subject_types": ["Person"],
+      "object_types": ["Artifact", "Concept"],
+      "patterns": ["提出", "发明", "设计", "研制", "开发", "建造"],
+      "object_tags": ["inventable_artifact", "inventable_concept"],
+      "negative_patterns": ["对抗", "破解", "破译"],
+      "max_distance": 90
+    },
+    {
+      "id": "decrypted",
+      "label": "破译",
+      "subject_types": ["Person"],
+      "object_types": ["Artifact"],
+      "patterns": ["破译", "破解", "解开"],
+      "object_tags": ["cipher_target"],
+      "max_distance": 60
+    },
+    {
+      "id": "located_in",
+      "label": "位于",
+      "subject_types": ["Organization"],
+      "object_types": ["Place"],
+      "patterns": ["位于", "坐落于", "设在"],
+      "max_distance": 24
+    }
+  ]
+}

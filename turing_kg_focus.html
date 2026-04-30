@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>TuringKG Focus Graph</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f6f2e8; color: #2a241c; font-family: Georgia, "Times New Roman", serif; }
+  #header { padding: 24px 32px; border-bottom: 1px solid #d9cfbf; background: linear-gradient(135deg, #efe4d1, #f9f6ef); }
+  #header h1 { font-size: 24px; letter-spacing: 0.02em; }
+  #header p { margin-top: 8px; font-size: 14px; color: #5b5248; }
+  #mynetwork { width: 100%; height: calc(100vh - 92px); }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>TuringKG Focus Graph</h1>
+  <p>Source: local EPUB/PDF biographies | centered on Alan Turing | Nodes: 11 | Edges: 10</p>
+</div>
+<div id="mynetwork"></div>
+<script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.6/standalone/umd/vis-network.min.js"></script>
+<script>
+const DATA = {"nodes": [{"id": "artifact_ace", "label": "自动计算引擎", "group": "Artifact", "title": "图灵提出的早期计算机设计方案。<br/>mentions: 262<br/>关系图中可见", "value": 262}, {"id": "artifact_bombe", "label": "炸弹机", "group": "Artifact", "title": "用于辅助破译恩尼格玛密码的电机械设备。<br/>mentions: 97<br/>关系图中可见", "value": 97}, {"id": "artifact_enigma", "label": "恩尼格玛密码机", "group": "Artifact", "title": "二战时期德军使用的密码机，是图灵团队的重要破译对象。<br/>mentions: 206<br/>关系图中可见", "value": 206}, {"id": "concept_turing_machine", "label": "图灵机", "group": "Concept", "title": "图灵提出的抽象计算模型。<br/>mentions: 164<br/>关系图中可见", "value": 164}, {"id": "concept_turing_test", "label": "图灵测试", "group": "Concept", "title": "图灵提出的机器智能判定思想。<br/>mentions: 59<br/>关系图中可见", "value": 59}, {"id": "event_world_war_ii", "label": "第二次世界大战", "group": "Event", "title": "图灵密码分析工作的重要历史背景。<br/>mentions: 37<br/>关系图中可见", "value": 37}, {"id": "org_gc_cs", "label": "政府密码学校", "group": "Organization", "title": "英国政府密码分析机构，与布莱切利园密切相关。<br/>mentions: 12<br/>关系图中可见", "value": 12}, {"id": "org_kings_college_cambridge", "label": "剑桥大学国王学院", "group": "Organization", "title": "图灵接受本科教育并开展早期研究的重要学院。<br/>mentions: 152<br/>关系图中可见", "value": 152}, {"id": "person_alan_turing", "label": "艾伦·图灵", "group": "Person", "title": "英国数学家、逻辑学家、密码分析学家，提出图灵机与图灵测试。<br/>mentions: 3576<br/>关系图中可见", "value": 3576}, {"id": "person_alonzo_church", "label": "阿隆佐·丘奇", "group": "Person", "title": "美国逻辑学家，普林斯顿大学教授，图灵在普林斯顿时期的导师。<br/>mentions: 75<br/>关系图中可见", "value": 75}, {"id": "place_london", "label": "伦敦", "group": "Place", "title": "图灵出生地相关城市。<br/>mentions: 164<br/>关系图中可见", "value": 164}], "edges": [{"from": "person_alan_turing", "to": "artifact_enigma", "label": "破译", "relation_id": "decrypted", "title": "source: extracted<br/>早在1943年，图灵发明的机器每个月就能破译多达8 400条恩尼格玛密码机的加密信息。<br/>20图灵亲自破译了恩尼格玛密码机发出的U型潜艇攻击北大西洋商船队的加密信息，这是一项非常突出的贡献。<br/>1一些历史学家估计，如此大规模的密码破译行动，特别是图灵主导破译的U型潜艇的恩尼格玛密码机，将欧洲战争缩短了两到四年。", "value": 21, "avg_confidence": 0.9682, "source": "extracted"}, {"from": "person_alan_turing", "to": "concept_turing_machine", "label": "提出或研制", "relation_id": "developed", "title": "source: extracted<br/>我们将在第二章具体描写图灵院士是如何发明图灵机的。<br/>图灵是在研究数学理论上一个深奥的哲学问题时发明了图灵机的，具有讽刺意味的是，这个机器诞生于完全抽象的研究，从来没有人想到它会有任何实际的用途，更别提它会影响我们的生活了。<br/>许多年后，纽曼回忆起图灵发明的通用图灵机，说：\n“我相信这一切都是源于他参加了我关于数学和逻辑基础的课程。", "value": 6, "avg_confidence": 0.9321, "source": "extracted"}, {"from": "person_alan_turing", "to": "artifact_ace", "label": "提出或研制", "relation_id": "developed", "title": "source: extracted<br/>实际上，图灵设计的复杂的ACE，后来成为世界上第一台个人电脑的基础。<br/>图灵应该抓住这个机会开始着手建造ACE。<br/>哈斯基想通过连接相对较小的计算机来打开局面，而图灵则想建造一个更大的计算机，也就是他设计的ACE。", "value": 5, "avg_confidence": 0.9095, "source": "extracted"}, {"from": "person_alan_turing", "to": "concept_turing_test", "label": "提出或研制", "relation_id": "developed", "title": "source: extracted<br/>而对于战后的人工智能发展更感兴趣的读者，则会为书中展现的图灵在20世纪四五十年代就已经达成的学术成就而感到震惊：他所提出的“图灵测试”的思想为今天的“聊天盒”技术提供了框架；他很早就开始用计算机做辅助工具来研究生物学，由此成为今日如火如荼的“人工生命”研究的鼻祖；他很早就尝试用计算机为工具进行日常语言文本的自动化处理，由此为手写时代的结束唱响了第一曲丧歌。<br/>42自图灵首次提出“模仿游戏”以来的近70年里，图灵测试受到了哲学家、心理学家、计算机科学家和其他人的大量质疑和抨击。<br/>W.A.Farley B.G.‘Generalisation of Pattern Recognition in aSelf-Organising System’ in Proceedings of the Western JointComputer Conference 1955.\n11．Gold J.I.Shadlen M.N.‘Banburismus and the BrainDecoding the Relationship be-tween Sensory Stimuli Decisionsand Reward’ Neuron vol.36 2002 pp.299-308.\n12．图灵于1948年在英国国家物理实验室的一份报告中首次展示了他设计的模仿游戏，两年后更全面地发表在哲学杂志Mind上。", "value": 3, "avg_confidence": 0.9259, "source": "extracted"}, {"from": "person_alan_turing", "to": "person_alonzo_church", "label": "合作", "relation_id": "collaborated_with", "title": "source: extracted<br/>图灵马上就有机会能够与丘奇一起合作进行数学研究了。<br/>她在日记中写道：9月9日（星期三）：……艾伦·图灵来了……他过来道别，要去美国普林斯顿9个月，与几位顶尖学者一起研究他的课题，哥德尔，阿隆佐·丘奇，还有克林。", "value": 2, "avg_confidence": 0.9468, "source": "extracted"}, {"from": "person_alan_turing", "to": "place_london", "label": "出生于", "relation_id": "born_in", "title": "source: extracted<br/>艾伦·图灵于一个多世纪前的1912年6月23日出生于沃灵顿街2号，出生地距离伦敦帕丁顿火车站大约800米。", "value": 1, "avg_confidence": 0.9866, "source": "extracted"}, {"from": "person_alan_turing", "to": "event_world_war_ii", "label": "参与密码破译", "relation_id": "codebreaking_contribution", "title": "source: inferred<br/>由规则 R2_decrypted_enigma_wartime_contribution 根据证据三元组推理得到：doc_01_图灵传_智能时代的拓荒者_20世纪伟大的科学巨匠图灵的重要传记_讲述图灵的生平_成就_知识遗产与-s00151:decrypted:person_alan_turing:artifact_enigma；doc_01_图灵传_智能时代的拓荒者_20世纪伟大的科学巨匠图灵的重要传记_讲述图灵的生平_成就_知识遗产与-s00152:decrypted:person_alan_turing:artifact_enigma；doc_01_图灵传_智能时代的拓荒者_20世纪伟大的科学巨匠图灵的重要传记_讲述图灵的生平_成就_知识遗产与-s00609:decrypted:person_alan_turing:artifact_enigma；doc_01_图灵传_智能时代的拓荒者_20世纪伟大的科学巨匠图灵的重要传记_讲述图灵的生平_成就_知识遗产与-s00619:decrypted:person_alan_turing:artifact_enigma；... 共 21 条证据", "value": 1, "avg_confidence": 0.7879, "source": "inferred"}, {"from": "person_alan_turing", "to": "org_kings_college_cambridge", "label": "就读于", "relation_id": "studied_at", "title": "source: extracted<br/>图灵于1931年秋获得奖学金，最终迈入了国王学院的雄伟大门。", "value": 1, "avg_confidence": 0.9601, "source": "extracted"}, {"from": "person_alan_turing", "to": "org_gc_cs", "label": "工作于", "relation_id": "worked_at", "title": "source: extracted<br/>当图灵加入英国政府密码学校时，这个小型组织还没有为战争做好准备，但它很快就会在伦敦以外的地区拥有一个新家。", "value": 1, "avg_confidence": 0.9325, "source": "extracted"}, {"from": "person_alan_turing", "to": "artifact_bombe", "label": "提出或研制", "relation_id": "developed", "title": "source: extracted<br/>因为杰弗里忙于制作新的打孔卡片，所以由另外两个数学家，艾伦·图灵和戈登·威尔奇曼，来负责设计一种新机器，这种机器就是后来的英国版炸弹机。", "value": 1, "avg_confidence": 0.9452, "source": "extracted"}]};
+const groupColors = {
+  Person: '#c8553d',
+  Organization: '#457b9d',
+  Place: '#6a994e',
+  Artifact: '#8a5aab',
+  Concept: '#dd8b2f',
+  Event: '#264653',
+  default: '#8d99ae',
+};
+
+const nodes = DATA.nodes.map((node) => {
+  const color = groupColors[node.group] || groupColors.default;
+  return {
+    ...node,
+    shape: node.group === 'Person' ? 'dot' : 'ellipse',
+    color: {
+      background: color,
+      border: color,
+      highlight: { background: color, border: color }
+    },
+    font: { color: '#1f1b16', size: 14, face: 'Georgia, serif' },
+    size: 10 + Math.min(node.value * 2, 16),
+  };
+});
+
+const edges = DATA.edges.map((edge) => ({
+  ...edge,
+  color: { color: edge.source === 'inferred' ? '#6f4e7c' : '#9a8f82', highlight: '#2a9d8f' },
+  width: Math.min(1 + edge.value, 4),
+  dashes: edge.source === 'inferred',
+  font: { align: 'middle', color: '#5b5248', size: 11 },
+  smooth: { type: 'dynamic' },
+  arrows: { to: { enabled: true, scaleFactor: 0.7 } },
+}));
+
+new vis.Network(
+  document.getElementById('mynetwork'),
+  { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) },
+  {
+    physics: {
+      stabilization: { iterations: 150 },
+      barnesHut: { gravitationalConstant: -3500, springLength: 140, springConstant: 0.025 }
+    },
+    interaction: { hover: true, navigationButtons: true, keyboard: true },
+  }
+);
+</script>
+</body>
+</html>

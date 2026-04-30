@@ -1,0 +1,64 @@
+{
+  "linked_entity_count": 20,
+  "triple_node_count": 13,
+  "triple_count": 43,
+  "triple_source_distribution": {
+    "extracted": 42,
+    "inferred": 1
+  },
+  "relation_distribution": {
+    "developed": 15,
+    "born_in": 1,
+    "studied_at": 1,
+    "decrypted": 21,
+    "collaborated_with": 3,
+    "worked_at": 1,
+    "codebreaking_contribution": 1
+  },
+  "nil_rate": 0.0002,
+  "average_link_score": 0.9177,
+  "raw_orphan_node_ratio": 0.35,
+  "raw_center_component_ratio": 0.55,
+  "projected_orphan_node_ratio": 0.0,
+  "projected_center_component_ratio": 1.0,
+  "conflict_pair_ratio": 0.0,
+  "conflicting_pairs": {},
+  "single_support_edge_ratio": 0.5,
+  "average_edge_support": 4.2,
+  "tokenizer_proxy": {
+    "linked_mentions": {
+      "count": 5706,
+      "boundary_alignment_rate": 0.9716,
+      "fragmentation_mean": 1.2843,
+      "single_token_rate": 0.8424
+    },
+    "gazetteer_mentions": {
+      "count": 5589,
+      "boundary_alignment_rate": 0.971,
+      "fragmentation_mean": 1.2462,
+      "single_token_rate": 0.8597
+    },
+    "token_count": 366749,
+    "average_sentence_tokens": 24.9015
+  },
+  "projection": {
+    "view": "focused",
+    "raw_linked_entity_count": 20,
+    "raw_triple_node_count": 13,
+    "node_count": 11,
+    "edge_count": 10,
+    "isolated_node_count": 0,
+    "removed_linked_entities": [
+      "concept_decision_problem",
+      "org_bletchley_park",
+      "org_princeton_university",
+      "org_university_of_manchester",
+      "person_joan_clarke",
+      "person_john_von_neumann",
+      "person_max_newman",
+      "place_cambridge",
+      "place_princeton"
+    ],
+    "center_entity_id": "person_alan_turing"
+  }
+}

@@ -1,9 +1,15 @@
 [project]
 name = "turingkep"
 version = "0.1.0"
-description = "Add your description here"
+description = "Minimal and explainable Turing knowledge graph extraction pipeline"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "ebooklib>=0.20",
+    "jieba>=0.42.1",
+    "pypdf>=6.10.1",
     "requests>=2.33.1",
+    "scikit-learn>=1.8.0",
+    "sklearn-crfsuite>=0.5.0",
 ]
