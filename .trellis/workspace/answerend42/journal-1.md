@@ -110,3 +110,37 @@ Task 1 Ch2 知识表示：实体 21→46，关系 7→10，三元组 43→110。
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: Task 2: Ch4 实体识别 — 四方法对比（Gazetteer/CRF/HMM/hmmlearn）
+
+**Date**: 2026-04-30
+**Task**: Task 2: Ch4 实体识别 — 四方法对比（Gazetteer/CRF/HMM/hmmlearn）
+**Branch**: `main`
+
+### Summary
+
+实现手写 HMM 和 hmmlearn 库版 HMM，四方法统一接口。手写版产出 9,893 提及，hmmlearn 版 436。Pipeline 支持 --method 切换。生成对比报告到 evaluation/ner_comparison.json。hmmlearn 特征桶化实验本身有方法论价值。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `7fc4784` | (see git log) |
+| `7ffe11e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
