@@ -1,0 +1,90 @@
+[
+  {
+    "subject": "伯恩",
+    "relation": "合作",
+    "object": "约翰·冯·诺伊曼",
+    "source": "extracted",
+    "confidence": 0.9302,
+    "evidence": "古德建议了12条基本指令，但他似乎没有向基尔伯恩说明，他是从冯·诺伊曼及其合作者的设计论文（《电子计算机逻辑设计的初步讨论》）中提炼出来的。"
+  },
+  {
+    "subject": "朱利叶斯·图灵",
+    "relation": "出生于",
+    "object": "英国",
+    "source": "extracted",
+    "confidence": 0.962,
+    "evidence": "朱利叶斯不想让他在印度出生，于是在1912年，他们一家回到了英国。"
+  },
+  {
+    "subject": "伯恩",
+    "relation": "提出或研制",
+    "object": "基尔",
+    "source": "cooccurrence",
+    "confidence": 0.9,
+    "evidence": "事实上，基尔伯恩最初的设计，就是后来的曼彻斯特“小婴儿”，严格遵循了图灵的原理。"
+  },
+  {
+    "subject": "艾伦·图灵",
+    "relation": "逝世于",
+    "object": "英国",
+    "source": "cooccurrence",
+    "confidence": 0.55,
+    "evidence": "简单地说，图灵是这么个英国人：生于1912年，死于1954年，是数学天才也是同性恋，这在半个多世纪前的英国还是大忌。"
+  },
+  {
+    "subject": "艾伦·图灵",
+    "relation": "出生于",
+    "object": "英国",
+    "source": "cooccurrence",
+    "confidence": 0.55,
+    "evidence": "简单地说，图灵是这么个英国人：生于1912年，死于1954年，是数学天才也是同性恋，这在半个多世纪前的英国还是大忌。"
+  },
+  {
+    "subject": "国家物理实验室",
+    "relation": "位于",
+    "object": "英国",
+    "source": "cooccurrence",
+    "confidence": 0.55,
+    "evidence": "1众所周知，英国国家物理实验室是英国科学的支柱，位于距伦敦市中心几公里处的特丁顿郊区。"
+  },
+  {
+    "subject": "伯恩",
+    "relation": "工作于",
+    "object": "曼彻斯特大学",
+    "source": "cooccurrence",
+    "confidence": 0.55,
+    "evidence": "据我所知，威廉姆斯在录音中陈述道，“汤姆·基尔伯恩和我在曼彻斯特大学时都对计算机一无所知”，并且“纽曼向我们解释了计算机的整个工作原理”，这两句话最早出现在我和黛安·普劳德福特在曼彻斯特“小婴儿”计算"
+  },
+  {
+    "subject": "伯恩",
+    "relation": "影响",
+    "object": "马克斯·纽曼",
+    "source": "cooccurrence",
+    "confidence": 0.55,
+    "evidence": "虽然基尔伯恩在他关于曼彻斯特计算机的第一篇论文中，赞扬了图灵和纽曼，但自此以后，他就竭力主张自己和威廉姆斯的成果不受外界影响。"
+  },
+  {
+    "subject": "伯恩",
+    "relation": "影响",
+    "object": "艾伦·图灵",
+    "source": "cooccurrence",
+    "confidence": 0.55,
+    "evidence": "虽然基尔伯恩在他关于曼彻斯特计算机的第一篇论文中，赞扬了图灵和纽曼，但自此以后，他就竭力主张自己和威廉姆斯的成果不受外界影响。"
+  },
+  {
+    "subject": "伯恩",
+    "relation": "合作",
+    "object": "杰克·古德",
+    "source": "cooccurrence",
+    "confidence": 0.55,
+    "evidence": "古德建议了12条基本指令，但他似乎没有向基尔伯恩说明，他是从冯·诺伊曼及其合作者的设计论文（《电子计算机逻辑设计的初步讨论》）中提炼出来的。"
+  },
+  {
+    "subject": "艾伦·图灵",
+    "relation": "出生于",
+    "object": "罗宾",
+    "source": "dependency_path",
+    "confidence": 0.8,
+    "evidence": "图灵没有多说什么，但在第二天早上，图灵对罗宾说：“我们的关系已经很熟了……也许我应该告诉你，我是个同性恋。"
+  }
+]

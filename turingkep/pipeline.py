@@ -14,6 +14,7 @@ from .hmm_ner import HMMExtractor, HMMLearnExtractor
 from .ner import CrfResult, GazetteerExtractor, CRFExtractor, merge_mentions
 from .ner_comparison import compute_ner_comparison
 from .open_entity import discover_new_entities, extend_schema_with_discoveries
+from .disambiguation import cluster_entity_fragments
 from .relation_methods import extract_by_cooccurrence, extract_by_dependency_path
 from .paths import (
     EVALUATION_DIR,
@@ -55,6 +56,7 @@ class PipelineContext:
     ner_method: str = "all"
     discovered_entity_count: int = 0
     discovered_mention_count: int = 0
+    fragment_merge_count: int = 0
     merged_mentions: list[MentionRecord] = field(default_factory=list)
     linked_mentions: list[MentionRecord] = field(default_factory=list)
     asserted_triples: list[TripleRecord] = field(default_factory=list)
@@ -135,7 +137,7 @@ def run_ner_stage(ctx: PipelineContext) -> None:
 
     # 开放域实体发现：从文本中发现 schema 之外的新实体
     new_entities = discover_new_entities(
-        ctx.documents, ctx.schema, min_confidence=0.60, max_new=50
+        ctx.documents, ctx.schema, min_confidence=0.50, max_new=80
     )
     if new_entities:
         extended_schema = extend_schema_with_discoveries(ctx.schema, new_entities)
@@ -163,8 +165,34 @@ def run_ner_stage(ctx: PipelineContext) -> None:
 
 
 def run_linking_stage(ctx: PipelineContext) -> None:
-    """实体链接阶段：消歧与链接到知识库。"""
+    """实体链接 + Ch5 聚类消歧：碎片实体合并到规范实体。"""
     ctx.linked_mentions = link_mentions(ctx.merged_mentions, ctx.sentences, ctx.schema)
+
+    # TF-IDF 聚类消歧：合并碎片实体
+    sent_map = {s.sentence_id: s.text for s in ctx.sentences}
+    merges = cluster_entity_fragments(
+        ctx.linked_mentions, sent_map, ctx.schema, threshold=0.75
+    )
+    if merges:
+        ctx.fragment_merge_count = len(merges)
+        # 重定向 linked_mentions
+        from dataclasses import replace as dreplace
+        redirected = []
+        for m in ctx.linked_mentions:
+            if m.linked_entity_id and m.linked_entity_id in merges:
+                redirected.append(dreplace(m, linked_entity_id=merges[m.linked_entity_id]))
+            else:
+                redirected.append(m)
+        ctx.linked_mentions = redirected
+        # 从 schema 中移除被合并的碎片实体
+        ctx.schema = DomainSchema(
+            entity_types=ctx.schema.entity_types,
+            entities=[e for e in ctx.schema.entities if e.id not in merges],
+            relations=ctx.schema.relations,
+            central_entity_id=ctx.schema.central_entity_id,
+            entity_hierarchy=ctx.schema.entity_hierarchy,
+        )
+
     save_records(LINKING_DIR / "linked_mentions.jsonl", ctx.linked_mentions)
 
 
@@ -182,7 +210,7 @@ def run_relation_stage(ctx: PipelineContext) -> None:
         ctx.linked_mentions, ctx.sentences, ctx.schema, min_pattern_support=2
     )
 
-    # 合并去重（保留每种方法的最高置信度）
+    # 合并去重
     merged: dict[tuple[str, str, str], TripleRecord] = {}
     for triple in pattern_triples + cooccur_triples + deppath_triples:
         key = (triple.subject_entity_id, triple.relation_id, triple.object_entity_id)
@@ -190,13 +218,41 @@ def run_relation_stage(ctx: PipelineContext) -> None:
         if existing is None or triple.confidence > existing.confidence:
             merged[key] = triple
 
-    ctx.asserted_triples = sorted(merged.values(), key=lambda t: t.triple_id)
+    # 碎片过滤：标记并排除含碎片实体的三元组
+    entity_names = {e.id: e.name for e in ctx.schema.entities}
+    suspicious: list[dict] = []
+    clean: list[TripleRecord] = []
+    for t in merged.values():
+        subj_name = entity_names.get(t.subject_entity_id, "")
+        obj_name = entity_names.get(t.object_entity_id, "")
+        # 碎片标记：实体名 ≤2 字且是另一个更长实体名的子串
+        is_fragment = False
+        if len(subj_name) <= 2 and t.subject_entity_id.startswith("discovered_"):
+            for other_name in entity_names.values():
+                if subj_name in other_name and other_name != subj_name:
+                    is_fragment = True
+                    break
+        if len(obj_name) <= 2 and t.object_entity_id.startswith("discovered_"):
+            for other_name in entity_names.values():
+                if obj_name in other_name and other_name != obj_name:
+                    is_fragment = True
+                    break
+        if is_fragment:
+            suspicious.append({
+                "subject": t.subject_name, "relation": t.relation_label,
+                "object": t.object_name, "source": t.source,
+                "confidence": t.confidence, "evidence": t.evidence_sentence[:100],
+            })
+        else:
+            clean.append(t)
+
+    ctx.asserted_triples = sorted(clean, key=lambda t: t.triple_id)
     ctx.relation_stats = {
-        "pattern": len(pattern_triples),
-        "cooccurrence": len(cooccur_triples),
-        "dependency_path": len(deppath_triples),
-        "merged": len(merged),
+        "pattern": len(pattern_triples), "cooccurrence": len(cooccur_triples),
+        "dependency_path": len(deppath_triples), "merged": len(merged),
+        "suspicious_filtered": len(suspicious), "clean": len(clean),
     }
+    write_json(EVALUATION_DIR / "suspicious_triples.json", suspicious)
     save_records(RELATION_DIR / "triples.jsonl", ctx.asserted_triples)
 
 

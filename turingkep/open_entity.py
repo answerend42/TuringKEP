@@ -31,13 +31,13 @@ def discover_new_entities(
             if len(alias) <= 2:
                 known_names.add(alias_lower)
 
-    candidates = discover_candidate_entities(documents, known_names, min_freq=15)
+    candidates = discover_candidate_entities(documents, known_names, min_freq=5)
 
-    # 选出高置信度候选（要求 POS 信号或有 TF-IDF 强信号）
+    # 选出候选：降低门槛 + 过滤明显碎片
     selected = [
         c for c in candidates
         if c["confidence"] >= min_confidence
-        and (c["pos_types"] or c["tfidf_weight"] >= 0.015)
+        and len(c["word"]) >= 2  # 排除单字碎片
     ]
     selected = selected[:max_new]
 
