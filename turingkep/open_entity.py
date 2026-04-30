@@ -18,35 +18,37 @@ def validate_discovered_entities(
     """Ch3 知识融合：用本体约束验证发现实体的质量。
 
     过滤规则：
-    1. 实体必须在 >= min_context_diversity 个不同上下文中出现
+    1. 实体必须在 >= min_context_diversity 个非 citation 上下文中出现
     2. 实体不能是常见停用词
     3. 实体长度 >= 2 且不是纯数字
+    4. 实体不能 >80% 出现在参考文献/脚注中
     """
-    # 收集已知实体名称
+    import re
+    citation_pattern = re.compile(r"[①②③④⑤⑥⑦⑧⑨⑩\d]+[．.]")
+
     known_names: set[str] = set()
     for e in schema.entities:
         for a in e.all_names:
             known_names.add(a)
             known_names.add(a.lower())
 
-    # 对每个候选实体，检查上下文多样性
     validated: list[EntityDefinition] = []
     for entity in new_entities:
         name = entity.name
         if len(name) < 2 or name.isdigit():
             continue
-        # 过滤纯英文常见词（spaCy 在中文文本中可能误标）
         if name.isascii() and len(name) <= 3 and name.lower() in {
             "the", "see", "for", "and", "was", "his", "had", "not",
             "but", "are", "has", "can", "its", "new", "one", "two",
+            "of", "in", "to", "it", "is", "on", "at", "by", "or",
+            "be", "as", "we", "an", "if", "my", "so", "up", "no",
         }:
             continue
-        # 检查是否是已知实体的别名
         if name in known_names or name.lower() in known_names:
             continue
 
-        # 统计该实体出现在多少不同句子中
-        contexts: set[str] = set()
+        all_contexts: list[str] = []
+        citation_contexts: list[str] = []
         for doc in documents:
             text = doc.text
             idx = 0
@@ -54,14 +56,20 @@ def validate_discovered_entities(
                 found = text.find(name, idx)
                 if found == -1:
                     break
-                # 提取上下文（前后各 30 字符）
                 start = max(0, found - 30)
                 end = min(len(text), found + len(name) + 30)
                 ctx = text[start:end]
-                contexts.add(ctx)
+                all_contexts.append(ctx)
+                # 检测 citation 模式
+                before = text[max(0, found - 20):found]
+                if citation_pattern.search(before) or "，" in before[-5:]:
+                    citation_contexts.append(ctx)
                 idx = found + len(name)
 
-        if len(contexts) >= min_context_diversity:
+        # 如果 >70% 的出现在 citation 中，排除
+        if len(all_contexts) >= 5 and len(citation_contexts) / len(all_contexts) > 0.7:
+            continue
+        if len(all_contexts) >= min_context_diversity:
             validated.append(entity)
 
     return validated

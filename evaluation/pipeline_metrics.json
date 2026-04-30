@@ -1,32 +1,31 @@
 {
-  "linked_entity_count": 45,
-  "triple_node_count": 30,
-  "triple_count": 65,
+  "linked_entity_count": 46,
+  "triple_node_count": 33,
+  "triple_count": 90,
   "triple_source_distribution": {
-    "cooccurrence": 29,
-    "extracted": 28,
-    "spacy_svo": 4,
-    "inferred": 4
+    "cooccurrence": 42,
+    "extracted": 43,
+    "inferred": 5
   },
   "relation_distribution": {
     "influenced": 10,
-    "located_in": 5,
+    "located_in": 6,
+    "collaborated_with": 21,
     "developed": 16,
-    "decrypted": 4,
-    "collaborated_with": 8,
+    "decrypted": 5,
+    "studied_at": 9,
     "worked_at": 13,
-    "studied_at": 2,
+    "family_of": 3,
     "born_in": 2,
-    "supervised": 1,
-    "codebreaking_contribution": 4
+    "codebreaking_contribution": 5
   },
-  "nil_rate": 0.081,
-  "average_link_score": 0.7405,
-  "raw_orphan_node_ratio": 0.3333,
-  "raw_center_component_ratio": 0.6667,
+  "nil_rate": 0.0799,
+  "average_link_score": 0.7395,
+  "raw_orphan_node_ratio": 0.2826,
+  "raw_center_component_ratio": 0.7174,
   "projected_orphan_node_ratio": 0.0,
   "projected_center_component_ratio": 1.0,
-  "conflict_pair_ratio": 0.0156,
+  "conflict_pair_ratio": 0.0112,
   "conflicting_pairs": {
     "person_tommy_flowers->event_world_war_ii": [
       "codebreaking_contribution",
@@ -37,26 +36,26 @@
   "average_edge_support": 1,
   "tokenizer_proxy": {
     "linked_mentions": {
-      "count": 9293,
-      "boundary_alignment_rate": 0.9575,
-      "fragmentation_mean": 1.4968,
-      "single_token_rate": 0.7623
+      "count": 9369,
+      "boundary_alignment_rate": 0.9578,
+      "fragmentation_mean": 1.4948,
+      "single_token_rate": 0.7634
     },
     "gazetteer_mentions": {
-      "count": 8918,
-      "boundary_alignment_rate": 0.9557,
-      "fragmentation_mean": 1.3788,
-      "single_token_rate": 0.7832
+      "count": 8945,
+      "boundary_alignment_rate": 0.9558,
+      "fragmentation_mean": 1.3776,
+      "single_token_rate": 0.7839
     },
     "token_count": 366749,
     "average_sentence_tokens": 24.9015
   },
   "projection": {
     "view": "focused",
-    "raw_linked_entity_count": 45,
-    "raw_triple_node_count": 30,
-    "node_count": 30,
-    "edge_count": 65,
+    "raw_linked_entity_count": 46,
+    "raw_triple_node_count": 33,
+    "node_count": 33,
+    "edge_count": 90,
     "isolated_node_count": 0,
     "removed_linked_entities": [
       "artifact_manchester_mark1",
@@ -64,14 +63,12 @@
       "concept_halting_problem",
       "concept_morphogenesis",
       "discovered_concept_003",
+      "discovered_event_001",
       "discovered_person_001",
       "discovered_place_006",
       "discovered_place_007",
       "event_dday",
-      "person_ethel_sara_turing",
       "person_gordon_welchman",
-      "person_julius_turing",
-      "person_robin_gandy",
       "place_bletchley",
       "place_manchester"
     ],
