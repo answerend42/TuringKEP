@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 5
+- **Total Sessions**: 6
 - **Last Active**: 2026-04-30
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~179 | Active |
+| `journal-1.md` | ~212 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 6 | 2026-04-30 | Task 4: Ch6 关系抽取 — 共现+模式词 + 依存路径 | `863e097` | `main` |
 | 5 | 2026-04-30 | Task 3: 开放域实体发现 — 打破封闭世界 | `dc56eb9` | `main` |
 | 4 | 2026-04-30 | Task 2: Ch4 实体识别 — 四方法对比（Gazetteer/CRF/HMM/hmmlearn） | `7fc4784`, `7ffe11e` | `main` |
 | 3 | 2026-04-30 | Task 1 补充: 段落级 TF-IDF + 停用词表 + 迭代日志 | `05d70eb`, `e2dbbfa`, `fc4ba69`, `143673e` | `main` |
