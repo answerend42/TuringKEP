@@ -14,6 +14,7 @@ from .hmm_ner import HMMExtractor, HMMLearnExtractor
 from .ner import CrfResult, GazetteerExtractor, CRFExtractor, merge_mentions
 from .ner_comparison import compute_ner_comparison
 from .open_entity import discover_new_entities, extend_schema_with_discoveries
+from .relation_methods import extract_by_cooccurrence, extract_by_dependency_path
 from .paths import (
     EVALUATION_DIR,
     EXTRACTED_DIR,
@@ -64,6 +65,7 @@ class PipelineContext:
     store_summary: dict[str, Any] = field(default_factory=dict)
     graph_payload: dict[str, Any] = field(default_factory=dict)
     projection_stats: dict[str, Any] = field(default_factory=dict)
+    relation_stats: dict[str, Any] = field(default_factory=dict)
     summary: dict[str, Any] = field(default_factory=dict)
 
 
@@ -167,9 +169,34 @@ def run_linking_stage(ctx: PipelineContext) -> None:
 
 
 def run_relation_stage(ctx: PipelineContext) -> None:
-    """关系抽取阶段：基于规则的三元组抽取。"""
+    """关系抽取阶段：规则模式 + 共现统计 + 依存句法路径。"""
+    # 方法 1: 正则模式匹配（原有）
     relation_ext = RelationExtractor(ctx.schema)
-    ctx.asserted_triples = relation_ext.extract(ctx.linked_mentions, ctx.sentences)
+    pattern_triples = relation_ext.extract(ctx.linked_mentions, ctx.sentences)
+    # 方法 2: 实体共现推断
+    cooccur_triples = extract_by_cooccurrence(
+        ctx.linked_mentions, ctx.sentences, ctx.schema, min_cooccur=3
+    )
+    # 方法 3: 依存句法路径
+    deppath_triples = extract_by_dependency_path(
+        ctx.linked_mentions, ctx.sentences, ctx.schema, min_pattern_support=2
+    )
+
+    # 合并去重（保留每种方法的最高置信度）
+    merged: dict[tuple[str, str, str], TripleRecord] = {}
+    for triple in pattern_triples + cooccur_triples + deppath_triples:
+        key = (triple.subject_entity_id, triple.relation_id, triple.object_entity_id)
+        existing = merged.get(key)
+        if existing is None or triple.confidence > existing.confidence:
+            merged[key] = triple
+
+    ctx.asserted_triples = sorted(merged.values(), key=lambda t: t.triple_id)
+    ctx.relation_stats = {
+        "pattern": len(pattern_triples),
+        "cooccurrence": len(cooccur_triples),
+        "dependency_path": len(deppath_triples),
+        "merged": len(merged),
+    }
     save_records(RELATION_DIR / "triples.jsonl", ctx.asserted_triples)
 
 

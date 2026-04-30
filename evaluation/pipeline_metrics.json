@@ -1,32 +1,178 @@
 {
   "linked_entity_count": 64,
-  "triple_node_count": 38,
-  "triple_count": 125,
+  "triple_node_count": 49,
+  "triple_count": 212,
   "triple_source_distribution": {
-    "extracted": 119,
-    "inferred": 6
+    "cooccurrence": 80,
+    "dependency_path": 45,
+    "extracted": 54,
+    "inferred": 33
   },
   "relation_distribution": {
-    "developed": 42,
-    "born_in": 4,
-    "studied_at": 1,
-    "decrypted": 26,
-    "collaborated_with": 16,
-    "worked_at": 19,
-    "influenced": 7,
-    "located_in": 1,
-    "supervised": 3,
-    "associated_with_place": 1,
-    "codebreaking_contribution": 5
+    "influenced": 26,
+    "collaborated_with": 42,
+    "decrypted": 12,
+    "developed": 36,
+    "worked_at": 24,
+    "located_in": 9,
+    "born_in": 13,
+    "died_in": 1,
+    "supervised": 8,
+    "studied_at": 8,
+    "associated_with_place": 24,
+    "codebreaking_contribution": 9
   },
   "nil_rate": 0.0714,
   "average_link_score": 0.9147,
-  "raw_orphan_node_ratio": 0.4062,
-  "raw_center_component_ratio": 0.5625,
+  "raw_orphan_node_ratio": 0.2344,
+  "raw_center_component_ratio": 0.7656,
   "projected_orphan_node_ratio": 0.0,
   "projected_center_component_ratio": 1.0,
-  "conflict_pair_ratio": 0.0345,
+  "conflict_pair_ratio": 0.2151,
   "conflicting_pairs": {
+    "discovered_person_003->person_alan_turing": [
+      "collaborated_with",
+      "influenced"
+    ],
+    "discovered_person_011->artifact_enigma": [
+      "decrypted",
+      "developed"
+    ],
+    "person_alan_turing->discovered_place_001": [
+      "associated_with_place",
+      "born_in",
+      "died_in"
+    ],
+    "person_alan_turing->artifact_ace": [
+      "decrypted",
+      "developed"
+    ],
+    "person_alan_turing->artifact_bombe": [
+      "decrypted",
+      "developed"
+    ],
+    "person_alan_turing->artifact_colossus": [
+      "decrypted",
+      "developed"
+    ],
+    "person_alan_turing->artifact_enigma": [
+      "decrypted",
+      "developed"
+    ],
+    "person_alan_turing->concept_cryptanalysis": [
+      "developed",
+      "influenced"
+    ],
+    "person_alan_turing->concept_stored_program": [
+      "developed",
+      "influenced"
+    ],
+    "person_alan_turing->concept_turing_machine": [
+      "developed",
+      "influenced"
+    ],
+    "person_alan_turing->event_world_war_ii": [
+      "codebreaking_contribution",
+      "influenced"
+    ],
+    "person_alan_turing->person_max_newman": [
+      "collaborated_with",
+      "influenced",
+      "supervised"
+    ],
+    "person_alan_turing->person_tommy_flowers": [
+      "collaborated_with",
+      "influenced"
+    ],
+    "person_alan_turing->person_joan_clarke": [
+      "collaborated_with",
+      "supervised"
+    ],
+    "person_alan_turing->org_kings_college_cambridge": [
+      "studied_at",
+      "worked_at"
+    ],
+    "person_dilly_knox->artifact_enigma": [
+      "decrypted",
+      "developed"
+    ],
+    "person_john_von_neumann->person_alan_turing": [
+      "collaborated_with",
+      "influenced"
+    ],
+    "person_max_newman->artifact_colossus": [
+      "decrypted",
+      "developed"
+    ],
+    "person_max_newman->concept_turing_machine": [
+      "developed",
+      "influenced"
+    ],
+    "person_max_newman->event_world_war_ii": [
+      "codebreaking_contribution",
+      "influenced"
+    ],
+    "person_max_newman->person_alan_turing": [
+      "collaborated_with",
+      "influenced",
+      "supervised"
+    ],
+    "person_tommy_flowers->artifact_enigma": [
+      "decrypted",
+      "developed"
+    ],
+    "person_tommy_flowers->org_bletchley_park": [
+      "studied_at",
+      "worked_at"
+    ],
+    "discovered_person_010->place_cambridge": [
+      "associated_with_place",
+      "born_in"
+    ],
+    "discovered_person_011->place_cambridge": [
+      "associated_with_place",
+      "born_in"
+    ],
+    "person_alan_turing->discovered_place_002": [
+      "associated_with_place",
+      "born_in"
+    ],
+    "person_alan_turing->place_cambridge": [
+      "associated_with_place",
+      "born_in"
+    ],
+    "person_alan_turing->concept_artificial_intelligence": [
+      "developed",
+      "influenced"
+    ],
+    "person_alan_turing->org_national_physical_laboratory": [
+      "studied_at",
+      "worked_at"
+    ],
+    "person_alan_turing->org_princeton_university": [
+      "studied_at",
+      "worked_at"
+    ],
+    "person_alan_turing->org_university_of_manchester": [
+      "studied_at",
+      "worked_at"
+    ],
+    "person_john_turing->person_alan_turing": [
+      "collaborated_with",
+      "influenced"
+    ],
+    "person_john_von_neumann->discovered_place_002": [
+      "associated_with_place",
+      "born_in"
+    ],
+    "person_max_newman->place_cambridge": [
+      "associated_with_place",
+      "born_in"
+    ],
+    "person_robin_gandy->place_cambridge": [
+      "associated_with_place",
+      "born_in"
+    ],
     "person_alan_turing->place_london": [
       "associated_with_place",
       "born_in"
@@ -36,8 +182,8 @@
       "influenced"
     ]
   },
-  "single_support_edge_ratio": 0.7288,
-  "average_edge_support": 2.1017,
+  "single_support_edge_ratio": 1.0,
+  "average_edge_support": 1,
   "tokenizer_proxy": {
     "linked_mentions": {
       "count": 12181,
@@ -57,38 +203,25 @@
   "projection": {
     "view": "focused",
     "raw_linked_entity_count": 64,
-    "raw_triple_node_count": 38,
-    "node_count": 36,
-    "edge_count": 59,
+    "raw_triple_node_count": 49,
+    "node_count": 49,
+    "edge_count": 212,
     "isolated_node_count": 0,
     "removed_linked_entities": [
       "artifact_manchester_mark1",
       "concept_church_turing_thesis",
-      "concept_decision_problem",
       "concept_halting_problem",
       "concept_morphogenesis",
-      "discovered_artifact_001",
-      "discovered_artifact_002",
-      "discovered_artifact_003",
-      "discovered_person_001",
       "discovered_person_008",
       "discovered_person_009",
       "discovered_person_012",
-      "discovered_person_014",
-      "discovered_place_001",
-      "discovered_place_002",
       "discovered_place_003",
       "discovered_place_004",
-      "discovered_place_005",
       "discovered_place_006",
       "event_dday",
       "person_christopher_morcom",
-      "person_ethel_sara_turing",
       "person_gordon_welchman",
-      "person_julius_turing",
-      "person_robin_gandy",
       "place_bletchley",
-      "place_cambridge",
       "place_manchester"
     ],
     "center_entity_id": "person_alan_turing"

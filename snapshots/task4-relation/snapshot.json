@@ -1,0 +1,72 @@
+{
+  "task": "Task 4: Ch6 关系抽取（三方法）",
+  "triples": 179,
+  "entities_in_triples": 49,
+  "methods": {
+    "extracted": 54,
+    "cooccurrence": 80,
+    "dependency_path": 45
+  },
+  "summary": {
+    "document_count": 2,
+    "sentence_count": 14728,
+    "entity_mention_count": 11819,
+    "linked_mention_count": 12181,
+    "triple_count": 212,
+    "asserted_triple_count": 54,
+    "inferred_triple_count": 33,
+    "graph_html": "outputs/08_graph/turing_kg.html",
+    "documents_path": "outputs/01_extracted/documents.jsonl",
+    "sentences_path": "outputs/02_preprocessed/sentences.jsonl",
+    "triples_path": "outputs/05_relations/triples.jsonl",
+    "inferred_triples_path": "outputs/06_reasoning/inferred_triples.jsonl",
+    "store_path": "outputs/07_storage",
+    "metrics_path": "evaluation/pipeline_metrics.json",
+    "crf_metrics_path": "evaluation/crf_metrics.json",
+    "focused_graph_html": "outputs/08_graph/turing_kg_focus.html",
+    "raw_orphan_node_ratio": 0.2344,
+    "projected_center_component_ratio": 1.0,
+    "conflict_pair_ratio": 0.2151,
+    "single_support_edge_ratio": 1.0,
+    "linked_boundary_alignment_rate": 0.9455,
+    "linked_fragmentation_mean": 1.3666,
+    "gazetteer_single_token_rate": 0.8355,
+    "reasoning": {
+      "rule_count": 3,
+      "inferred_triple_count": 33,
+      "inferred_relation_distribution": {
+        "associated_with_place": 24,
+        "codebreaking_contribution": 9
+      },
+      "rules": [
+        {
+          "id": "R1_studied_at_place",
+          "template": "studied_at(Person, Organization) + located_in(Organization, Place) => associated_with_place(Person, Place)"
+        },
+        {
+          "id": "R1_worked_at_place",
+          "template": "worked_at(Person, Organization) + located_in(Organization, Place) => associated_with_place(Person, Place)"
+        },
+        {
+          "id": "R2_decrypted_enigma_wartime_contribution",
+          "template": "decrypted(Person, Artifact) => codebreaking_contribution(Person, World War II)"
+        }
+      ]
+    },
+    "storage": {
+      "entity_count": 69,
+      "relation_count": 12,
+      "asserted_triple_count": 179,
+      "inferred_triple_count": 33,
+      "fact_count": 212,
+      "paths": {
+        "entities": "outputs/07_storage/entities.jsonl",
+        "relations": "outputs/07_storage/relations.jsonl",
+        "facts_jsonl": "outputs/07_storage/facts.jsonl",
+        "facts_tsv": "outputs/07_storage/facts.tsv",
+        "rdf_triples": "outputs/07_storage/triples.nt",
+        "query_examples": "outputs/07_storage/query_examples.json"
+      }
+    }
+  }
+}
