@@ -1,7 +1,4 @@
-"""无监督实体发现：段落级 TF-IDF + POS 词性标注 + 实体共现增强。
-
-将文档切分为段落，每个段落作为独立文档参与 TF-IDF 计算，
-使得 IDF 能有效区分领域高频词（如图灵、密码）和真正稀缺的专名。
+"""无监督实体发现：段落级 TF-IDF + spaCy NER + 实体共现增强。
 
 停用词表来源：https://github.com/goto456/stopwords (cn + hit 合并)
 """
@@ -13,17 +10,21 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import jieba.analyse
-import jieba.posseg as pseg
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from .paths import DATA_DIR
 from .records import DocumentRecord
 
-POS_TYPE_MAP = {
-    "nr": "Person",
-    "ns": "Place",
-    "nt": "Organization",
-    "nz": "Artifact",
+# spaCy NER → 项目实体类型映射
+SPACY_NER_TYPE_MAP = {
+    "PERSON": "Person",
+    "GPE": "Place",
+    "LOC": "Place",
+    "ORG": "Organization",
+    "FAC": "Place",
+    "EVENT": "Event",
+    "PRODUCT": "Artifact",
+    "WORK_OF_ART": "Concept",
 }
 
 
@@ -92,19 +93,31 @@ def _paragraph_tfidf(
     return dict(sorted_words)
 
 
-def _pos_tag_candidates(texts: list[str]) -> dict[str, list[str]]:
-    """词性标注：识别人名/地名/机构名/专名。"""
+def _spacy_ner_candidates(texts: list[str]) -> dict[str, list[str]]:
+    """用 spaCy 中文 NER 模型识别专名实体。"""
+    import spacy
+    try:
+        nlp = spacy.load("zh_core_web_sm")
+    except Exception:
+        return {}
+
+    # 批处理：每次处理 5000 字符的块
     candidates: dict[str, list[str]] = defaultdict(list)
     for text in texts:
-        for word, flag in pseg.cut(text):
-            word = word.strip()
-            if len(word) < 2:
-                continue
-            if flag not in POS_TYPE_MAP:
-                continue
-            entity_type = POS_TYPE_MAP[flag]
-            if entity_type not in candidates[word]:
-                candidates[word].append(entity_type)
+        # spaCy 对大文本分批处理
+        chunk_size = 8000
+        for start in range(0, len(text), chunk_size):
+            chunk = text[start:start + chunk_size]
+            doc = nlp(chunk)
+            for ent in doc.ents:
+                name = ent.text.strip()
+                if len(name) < 2:
+                    continue
+                if ent.label_ in SPACY_NER_TYPE_MAP:
+                    etype = SPACY_NER_TYPE_MAP[ent.label_]
+                    if etype not in candidates[name]:
+                        candidates[name].append(etype)
+
     return dict(candidates)
 
 
@@ -161,8 +174,8 @@ def discover_candidate_entities(
     # Remove single chars that slipped through
     tfidf_weights = {w: s for w, s in tfidf_weights.items() if len(w) >= 2}
 
-    # 2. POS 词性标注
-    pos_candidates = _pos_tag_candidates(texts)
+    # 2. spaCy NER 实体识别
+    pos_candidates = _spacy_ner_candidates(texts)
 
     # 3. 词频统计
     word_freq: Counter[str] = Counter()

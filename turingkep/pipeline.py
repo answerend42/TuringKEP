@@ -137,10 +137,10 @@ def run_ner_stage(ctx: PipelineContext) -> None:
 
     # 开放域实体发现 + 验证
     candidates = discover_new_entities(
-        ctx.documents, ctx.schema, min_confidence=0.50, max_new=80
+        ctx.documents, ctx.schema, min_confidence=0.45, max_new=80
     )
     new_entities = validate_discovered_entities(
-        ctx.documents, candidates, ctx.schema, min_context_diversity=5
+        ctx.documents, candidates, ctx.schema, min_context_diversity=3
     )
     if new_entities:
         extended_schema = extend_schema_with_discoveries(ctx.schema, new_entities)
@@ -402,7 +402,7 @@ def run_pipeline(ner_method: str = "all") -> dict:
 
 
 def _remove_self_linking_discoveries(ctx: PipelineContext) -> set[str]:
-    """移除只链接到自己的发现实体。"""
+    """移除只链接到自己的发现实体（仅当无其他实体交互时）。"""
     from collections import defaultdict
     by_eid: dict[str, list[MentionRecord]] = defaultdict(list)
     for m in ctx.linked_mentions:
@@ -417,7 +417,8 @@ def _remove_self_linking_discoveries(ctx: PipelineContext) -> set[str]:
         if not entity:
             continue
         self_match = sum(1 for m in mentions if m.text.strip() == entity.name)
-        if len(mentions) >= 3 and self_match / len(mentions) > 0.8:
+        # 更激进的条件：>95% 的 mention 是自我匹配，且总数 >= 5
+        if len(mentions) >= 5 and self_match / len(mentions) > 0.95:
             to_remove.add(eid)
 
     if to_remove:
