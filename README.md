@@ -1,6 +1,6 @@
 # TuringKG — 图灵知识图谱构建流水线
 
-从两本艾伦·图灵中文传记（EPUB/PDF）出发，自动构建知识图谱。
+从两本艾伦·图灵中文传记出发，自动构建知识图谱。
 
 ## 查看知识图谱
 
@@ -9,6 +9,60 @@
 > 或克隆仓库后，用浏览器打开 `turing_kg.html`。运行 `python main.py pipeline` 可重新生成。
 
 图谱基于 Cytoscape.js 渲染，包含 5 个 Tab：知识图谱主视图（点击节点高亮邻域＋搜索）、关系分析（分布图＋置信度）、推理链、NER 四方法对比、分析仪表盘。
+
+## 数据
+
+### 源数据
+
+两本艾伦·图灵中文传记，位于 `data/` 目录：
+
+| 文件 | 格式 | 来源 |
+|------|------|------|
+| 《图灵传：智能时代的拓荒者》 B.杰克·科普 著 | PDF | Z-Library |
+| 《艾伦·图灵传：如谜的解谜者》 Andrew Hodges 著 | EPUB | Z-Library |
+
+### 数据流
+
+```
+data/*.pdf, data/*.epub                        ← 原始输入（二进制）
+       │
+       ▼  [01 文本抽取]  pypdf + ebooklib
+outputs/01_extracted/documents.jsonl            ← 纯文本文档（DocumentRecord: id, title, text）
+       │
+       ▼  [02 预处理]  jieba 分句 + 分词
+outputs/02_preprocessed/sentences.jsonl         ← 句子 + 词元（SentenceRecord: tokens, text）
+       │
+       ▼  [03 实体识别]  Gazetteer/CRF/HMM ×4
+outputs/03_ner/*_mentions.jsonl                 ← 实体提及（MentionRecord: text, span, type, source）
+       │
+       ▼  [04 实体链接]  TF-IDF 候选 + 多特征排序 + NIL
+outputs/04_linking/linked_mentions.jsonl        ← 链接提及（+ entity_id, confidence, candidates）
+       │
+       ▼  [05 关系抽取]  正则模式 + 共现推断
+outputs/05_relations/triples.jsonl              ← 三元组（TripleRecord: subj, rel, obj, evidence）
+       │
+       ▼  [06 推理]  产生式规则 + 冲突消解
+outputs/06_reasoning/{inferred,triples_all}.jsonl  ← 推断三元组 + 全量
+       │
+       ▼  [07 存储]  JSONL / TSV / N-Triples
+outputs/07_storage/{entities,relations,facts}.*  ← 结构化导出
+       │
+       ▼  [08 可视化]  Cytoscape.js
+outputs/08_graph/turing_kg.html                 ← 交互式多 Tab 页面
+```
+
+每一步的中间产物都是可读的 JSONL 文件，可独立检查、调试、复用。
+
+### 数据规模
+
+| 阶段 | 数量 |
+|------|------|
+| 原始文档 | 2 本（PDF + EPUB） |
+| 句子 | 14,728 |
+| 实体提及（四方法合并） | ~10,000 |
+| 链接实体 | 46 个 schema 实体 |
+| 抽取三元组 | ~90 条 |
+| 推理三元组 | ~5 条 |
 
 ## 快速开始
 
