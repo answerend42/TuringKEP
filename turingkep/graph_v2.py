@@ -6,6 +6,7 @@ import json
 from typing import Any
 
 CYTOSCAPE_URL = "https://cdn.jsdelivr.net/npm/cytoscape@3.28.1/dist/cytoscape.min.js"
+DAGRE_URL = "https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js"
 CYTOSCAPE_DAGRE_URL = "https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.js"
 
 TAILWIND_CONFIG = """tailwind.config = {
@@ -200,6 +201,7 @@ def generate_graph_html_v2(
 </div>
 
 <script src="{CYTOSCAPE_URL}"></script>
+<script src="{DAGRE_URL}"></script>
 <script src="{CYTOSCAPE_DAGRE_URL}"></script>
 <script>
 // Tab switching
@@ -208,7 +210,7 @@ function switchTab(name) {{
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.querySelector(`.tab-btn:nth-child(${{['graph','relations','reasoning','ner','analytics'].indexOf(name)+1}})`).classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
-  if (name === 'graph') setTimeout(() => network && network.redraw(), 100);
+  if (name === 'graph') setTimeout(() => cy && cy.resize() && cy.fit(), 100);
 }}
 
 // === Main Graph (Cytoscape.js) ===
@@ -248,8 +250,7 @@ const cyEdges = DATA.edges.map((e,i) => {{
   }};
 }});
 
-document.addEventListener('DOMContentLoaded', function() {{
-  const cy = cytoscape({{
+const cy = cytoscape({{
     container: document.getElementById('mynetwork'),
     elements: [...cyNodes, ...cyEdges],
     style: [
@@ -295,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {{
   }};
   cy.style().selector('.dimmed').style({{ 'opacity': 0.15 }}).update();
   cy.style().selector('.highlighted').style({{ 'border-color': '#fff', 'border-width': 3 }}).update();
-}});
 
 // === Tab 2: Relations ===
 (function() {{
