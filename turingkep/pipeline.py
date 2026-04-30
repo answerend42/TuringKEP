@@ -32,7 +32,7 @@ from .paths import (
 from .preprocess import build_sentence_records
 from .records import DocumentRecord, MentionRecord, SentenceRecord, TripleRecord, save_records
 from .relation import RelationExtractor
-from .reasoning import RuleReasoner
+from .reasoning import RuleReasoner, _resolve_conflicts
 from .schema import DomainSchema, load_domain_schema
 from .storage import GraphStore
 from .utils import write_json
@@ -201,9 +201,15 @@ def run_relation_stage(ctx: PipelineContext) -> None:
 
 
 def run_reasoning_stage(ctx: PipelineContext) -> None:
-    """推理阶段：产生式规则推理。"""
+    """推理阶段：冲突消解 + 产生式规则推理。"""
+    pre_count = len(ctx.asserted_triples)
+    ctx.asserted_triples = _resolve_conflicts(ctx.asserted_triples)
+    conflicts_resolved = pre_count - len(ctx.asserted_triples)
+
     reasoner = RuleReasoner(ctx.schema)
     ctx.inferred_triples, ctx.reasoning_summary = reasoner.apply(ctx.asserted_triples)
+    ctx.reasoning_summary["conflicts_resolved"] = conflicts_resolved
+
     ctx.all_triples = [*ctx.asserted_triples, *ctx.inferred_triples]
     save_records(REASONING_DIR / "inferred_triples.jsonl", ctx.inferred_triples)
     save_records(REASONING_DIR / "triples_all.jsonl", ctx.all_triples)

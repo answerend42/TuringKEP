@@ -1,0 +1,94 @@
+{
+  "task": "Task 5: Ch9 知识推理",
+  "asserted": 177,
+  "inferred": 218,
+  "total": 360,
+  "conflicts_resolved": 35,
+  "rules": 8,
+  "summary": {
+    "document_count": 2,
+    "sentence_count": 14728,
+    "entity_mention_count": 11819,
+    "linked_mention_count": 12181,
+    "triple_count": 360,
+    "asserted_triple_count": 52,
+    "inferred_triple_count": 218,
+    "graph_html": "outputs/08_graph/turing_kg.html",
+    "documents_path": "outputs/01_extracted/documents.jsonl",
+    "sentences_path": "outputs/02_preprocessed/sentences.jsonl",
+    "triples_path": "outputs/05_relations/triples.jsonl",
+    "inferred_triples_path": "outputs/06_reasoning/inferred_triples.jsonl",
+    "store_path": "outputs/07_storage",
+    "metrics_path": "evaluation/pipeline_metrics.json",
+    "crf_metrics_path": "evaluation/crf_metrics.json",
+    "focused_graph_html": "outputs/08_graph/turing_kg_focus.html",
+    "raw_orphan_node_ratio": 0.2344,
+    "projected_center_component_ratio": 1.0,
+    "conflict_pair_ratio": 0.2169,
+    "single_support_edge_ratio": 1.0,
+    "linked_boundary_alignment_rate": 0.9455,
+    "linked_fragmentation_mean": 1.3666,
+    "gazetteer_single_token_rate": 0.8355,
+    "reasoning": {
+      "rule_count": 8,
+      "inferred_triple_count": 218,
+      "inferred_relation_distribution": {
+        "associated_with_place": 47,
+        "codebreaking_contribution": 7,
+        "indirect_influence": 47,
+        "shared_affiliation": 57,
+        "likely_colleague": 60
+      },
+      "rules": [
+        {
+          "id": "R1",
+          "template": "studied_at/worked_at(P,Org) + located_in(Org,Place) => associated_with_place(P,Place)"
+        },
+        {
+          "id": "R2",
+          "template": "decrypted(Person,Artifact) => codebreaking_contribution(Person,WWII)"
+        },
+        {
+          "id": "R3",
+          "template": "supervised(A,B) + developed(B,C) => indirect_influence(A,C)"
+        },
+        {
+          "id": "R4",
+          "template": "developed(P,A) + developed(P,B) => shared_affiliation(A,B)"
+        },
+        {
+          "id": "R5",
+          "template": "worked_at/studied_at(A,Org) + worked_at/studied_at(B,Org) => likely_colleague(A,B)"
+        },
+        {
+          "id": "R6",
+          "template": "developed(Person,Concept) => indirect_influence(Person,Concept)"
+        },
+        {
+          "id": "R7",
+          "template": "born_in(P,Place1) + located_in(Org,Place2) => associated_with_place(P,Place2)"
+        },
+        {
+          "id": "R8",
+          "template": "influenced(A,B) + influenced(B,C) => indirect_influence(A,C)"
+        }
+      ],
+      "conflicts_resolved": 35
+    },
+    "storage": {
+      "entity_count": 69,
+      "relation_count": 15,
+      "asserted_triple_count": 142,
+      "inferred_triple_count": 218,
+      "fact_count": 360,
+      "paths": {
+        "entities": "outputs/07_storage/entities.jsonl",
+        "relations": "outputs/07_storage/relations.jsonl",
+        "facts_jsonl": "outputs/07_storage/facts.jsonl",
+        "facts_tsv": "outputs/07_storage/facts.tsv",
+        "rdf_triples": "outputs/07_storage/triples.nt",
+        "query_examples": "outputs/07_storage/query_examples.json"
+      }
+    }
+  }
+}
