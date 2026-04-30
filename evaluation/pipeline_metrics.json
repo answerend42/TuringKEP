@@ -1,30 +1,30 @@
 {
-  "linked_entity_count": 41,
+  "linked_entity_count": 42,
   "triple_node_count": 28,
-  "triple_count": 110,
+  "triple_count": 112,
   "triple_source_distribution": {
-    "extracted": 106,
-    "inferred": 4
+    "extracted": 107,
+    "inferred": 5
   },
   "relation_distribution": {
     "developed": 40,
     "born_in": 3,
-    "decrypted": 24,
+    "decrypted": 25,
     "collaborated_with": 11,
     "worked_at": 18,
     "influenced": 7,
     "located_in": 1,
     "supervised": 2,
     "associated_with_place": 1,
-    "codebreaking_contribution": 3
+    "codebreaking_contribution": 4
   },
-  "nil_rate": 0.0008,
-  "average_link_score": 0.9247,
-  "raw_orphan_node_ratio": 0.3171,
-  "raw_center_component_ratio": 0.6829,
+  "nil_rate": 0.0923,
+  "average_link_score": 0.9086,
+  "raw_orphan_node_ratio": 0.3333,
+  "raw_center_component_ratio": 0.6667,
   "projected_orphan_node_ratio": 0.0,
   "projected_center_component_ratio": 1.0,
-  "conflict_pair_ratio": 0.0465,
+  "conflict_pair_ratio": 0.0444,
   "conflicting_pairs": {
     "person_alan_turing->place_london": [
       "associated_with_place",
@@ -35,14 +35,14 @@
       "influenced"
     ]
   },
-  "single_support_edge_ratio": 0.6667,
-  "average_edge_support": 2.4444,
+  "single_support_edge_ratio": 0.6809,
+  "average_edge_support": 2.383,
   "tokenizer_proxy": {
     "linked_mentions": {
-      "count": 8893,
-      "boundary_alignment_rate": 0.9567,
-      "fragmentation_mean": 1.3857,
-      "single_token_rate": 0.7797
+      "count": 9275,
+      "boundary_alignment_rate": 0.9585,
+      "fragmentation_mean": 1.4813,
+      "single_token_rate": 0.7639
     },
     "gazetteer_mentions": {
       "count": 8861,
@@ -55,10 +55,10 @@
   },
   "projection": {
     "view": "focused",
-    "raw_linked_entity_count": 41,
+    "raw_linked_entity_count": 42,
     "raw_triple_node_count": 28,
     "node_count": 28,
-    "edge_count": 45,
+    "edge_count": 47,
     "isolated_node_count": 0,
     "removed_linked_entities": [
       "artifact_manchester_mark1",
@@ -67,6 +67,7 @@
       "concept_halting_problem",
       "concept_morphogenesis",
       "event_dday",
+      "person_christopher_morcom",
       "person_ethel_sara_turing",
       "person_gordon_welchman",
       "person_julius_turing",
