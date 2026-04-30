@@ -94,35 +94,37 @@ def _paragraph_tfidf(
 
 
 def _spacy_ner_candidates(texts: list[str]) -> dict[str, list[str]]:
-    """用 spaCy 中文 NER 模型识别专名实体。"""
+    """用 spaCy 中文 NER 模型识别专名实体（批处理优化）。"""
     import spacy
     try:
         nlp = spacy.load("zh_core_web_sm")
     except Exception:
         return {}
 
-    # 在中文文本中过滤英文常见词（spaCy 可能误标）
     english_noise = {"the", "see", "for", "and", "was", "his", "had", "not",
                      "but", "are", "has", "can", "its", "new", "one", "two",
                      "of", "in", "to", "it", "is", "on", "at", "by", "or",
                      "be", "as", "we", "an", "if", "my", "so", "up", "no"}
 
-    candidates: dict[str, list[str]] = defaultdict(list)
+    # 将文本切分为 5000 字符的块，用 nlp.pipe() 批处理
+    chunks: list[str] = []
     for text in texts:
-        chunk_size = 8000
+        chunk_size = 5000
         for start in range(0, len(text), chunk_size):
-            chunk = text[start:start + chunk_size]
-            doc = nlp(chunk)
-            for ent in doc.ents:
-                name = ent.text.strip()
-                if len(name) < 2:
-                    continue
-                if name.lower() in english_noise:
-                    continue
-                if ent.label_ in SPACY_NER_TYPE_MAP:
-                    etype = SPACY_NER_TYPE_MAP[ent.label_]
-                    if etype not in candidates[name]:
-                        candidates[name].append(etype)
+            chunks.append(text[start:start + chunk_size])
+
+    candidates: dict[str, list[str]] = defaultdict(list)
+    for doc in nlp.pipe(chunks, batch_size=4):
+        for ent in doc.ents:
+            name = ent.text.strip()
+            if len(name) < 2:
+                continue
+            if name.lower() in english_noise:
+                continue
+            if ent.label_ in SPACY_NER_TYPE_MAP:
+                etype = SPACY_NER_TYPE_MAP[ent.label_]
+                if etype not in candidates[name]:
+                    candidates[name].append(etype)
 
     return dict(candidates)
 

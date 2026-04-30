@@ -212,10 +212,8 @@ def run_relation_stage(ctx: PipelineContext) -> None:
     cooccur_triples = extract_by_cooccurrence(
         ctx.linked_mentions, ctx.sentences, ctx.schema, min_cooccur=2
     )
-    # 方法 3: 依存句法路径
-    deppath_triples = extract_by_dependency_path(
-        ctx.linked_mentions, ctx.sentences, ctx.schema, min_pattern_support=2
-    )
+    # 方法 3: spaCy SVO (关闭——产出低/耗时长)
+    deppath_triples = []  # extract_by_dependency_path(ctx.linked_mentions, ctx.sentences, ctx.schema)
 
     # 合并去重
     merged: dict[tuple[str, str, str], TripleRecord] = {}
