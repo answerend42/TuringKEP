@@ -42,8 +42,21 @@ def generate_graph_html_v2(
         f'{t}<span class="ml-auto" style="color:#8b9198">{c}</span></div>\n'
         for t, c in type_dist.most_common()
     )
+    _REL_EDGE_COLORS = {
+        "出生于": "#e8a838", "逝世于": "#999", "就读于": "#5b9ecf",
+        "工作于": "#5b9ecf", "合作": "#7db85e", "提出或研制": "#a87dc2",
+        "破译": "#e06c50", "位于": "#5b9ecf", "影响": "#e8a838",
+        "指导": "#3d8b8b", "亲属": "#e06c50", "参与密码破译": "#6f4e7c",
+        "参与": "#3d8b8b",
+    }
+    def _rel_color(r: str) -> str:
+        return _REL_EDGE_COLORS.get(r, "#5b9ecf")
+
     rel_rows_html = "".join(
-        f'<div class="text-sm mb-1" style="color:#8b9198">{r} <span class="ml-auto">{c}</span></div>\n'
+        f'<div class="flex items-center gap-2 text-sm mb-1"><span class="inline-block w-2 h-2 rounded-full flex-shrink-0" '
+        f'style="background:{_rel_color(r)}"></span> '
+        f'<span style="color:#8b9198">{r}</span>'
+        f'<span class="ml-auto" style="color:#8b9198">{c}</span></div>\n'
         for r, c in rel_dist.most_common()
     )
 
@@ -74,6 +87,9 @@ def generate_graph_html_v2(
     )
 
     # Reasoning
+    rule_count = reasoning.get("rule_count", 0)
+    inferred_count = reasoning.get("inferred_triple_count", 0)
+    show_reasoning = rule_count > 1 or inferred_count > 5
     rules_html = "".join(
         f'<div class="stat-card mb-3"><span class="chip" style="background:#457b9d;color:#98cdf2">'
         f'{r["id"]}</span> <span class="text-sm ml-2">{r["template"]}</span></div>\n'
@@ -83,23 +99,42 @@ def generate_graph_html_v2(
         f'<div class="text-sm mb-1">{k}: <strong>{v}</strong></div>\n'
         for k, v in reasoning.get("inferred_relation_distribution", {}).items()
     )
+    reasoning_tab_style = 'style="display:none"' if not show_reasoning else ""
+    reasoning_btn_style = 'style="display:none"' if not show_reasoning else ""
 
-    # NER cards
-    ner_html = ""
-    for name, stats in ner.get("method_stats", {}).items():
+    # NER comparison
+    ner_methods = ner.get("method_stats", {})
+    # Summary row
+    ner_summary = ""
+    method_names = list(ner_methods.keys())
+    if method_names:
+        ner_summary = '<div class="col-span-2"><table class="w-full text-sm stat-card"><tr class="font-semibold">'
+        ner_summary += '<td class="p-2">Method</td><td class="p-2 text-right">Mentions</td><td class="p-2 text-right">Entities</td></tr>'
+        for name, stats in ner_methods.items():
+            types = stats.get("entity_type_distribution", {})
+            ner_summary += f'<tr><td class="p-2 font-semibold">{name}</td><td class="p-2 text-right">{stats["mention_count"]}</td><td class="p-2 text-right">{sum(types.values())}</td></tr>'
+        ner_summary += '</table></div>'
+
+    ner_cards = ""
+    for name, stats in ner_methods.items():
         dist = stats.get("entity_type_distribution", {})
         max_d = max(dist.values()) if dist else 1
-        bars = "".join(
-            f'<div class="flex items-center text-xs mb-1"><span class="w-20">{t}</span>'
-            f'<div class="flex-1 mx-2 h-2 rounded" style="background:#222a3d">'
-            f'<div class="h-2 rounded" style="width:{c * 100 // max_d}%;background:{_tc(t)}"></div></div>'
-            f'<span>{c}</span></div>\n'
-            for t, c in dist.items()
-        )
-        ner_html += (
+        # Horizontal stacked bar
+        total = sum(dist.values())
+        bar = '<div class="flex h-4 rounded overflow-hidden mb-3">'
+        for t, c in dist.items():
+            pct = c * 100 // total if total else 0
+            bar += f'<div style="width:{pct}%;background:{_tc(t)}" title="{t}: {c}"></div>'
+        bar += '</div>'
+        # Legend below bar
+        leg = '<div class="flex flex-wrap gap-2 text-xs">'
+        for t, c in dist.items():
+            leg += f'<span><span class="inline-block w-2 h-2 rounded-full mr-1" style="background:{_tc(t)}"></span>{t} {c}</span>'
+        leg += '</div>'
+        ner_cards += (
             f'<div class="stat-card"><h3 class="font-serif text-lg mb-2">{name}</h3>'
-            f'<p class="text-sm mb-3" style="color:#8b9198">{stats["mention_count"]} mentions</p>'
-            f'{bars}</div>\n'
+            f'<p class="text-sm mb-2" style="color:#8b9198">{stats["mention_count"]} mentions · {len(dist)} types</p>'
+            f'{bar}{leg}</div>\n'
         )
 
     return f"""<!DOCTYPE html><html class="dark" lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -129,7 +164,7 @@ def generate_graph_html_v2(
 <nav class="flex px-6" style="background:#0b1326">
 <button class="tab-btn active" onclick="switchTab('graph')">知识图谱</button>
 <button class="tab-btn" onclick="switchTab('relations')">关系分析</button>
-<button class="tab-btn" onclick="switchTab('reasoning')">推理链</button>
+<button class="tab-btn" onclick="switchTab('reasoning')" {reasoning_btn_style}>推理链</button>
 <button class="tab-btn" onclick="switchTab('ner')">NER对比</button>
 <button class="tab-btn" onclick="switchTab('analytics')">仪表盘</button>
 </nav></header>
@@ -156,7 +191,7 @@ def generate_graph_html_v2(
 <div class="stat-card"><h3 class="text-sm font-semibold mb-4" style="color:#8b9198">置信度分布</h3><div id="conf-chart" class="text-sm space-y-1"></div></div>
 </div></div>
 
-<div id="tab-reasoning" class="tab-content p-6">
+<div id="tab-reasoning" class="tab-content p-6" {reasoning_tab_style}>
 <h2 class="font-serif text-xl mb-6">推理链</h2>
 <div class="grid grid-cols-3 gap-4 mb-6">
 <div class="stat-card text-center"><div class="text-xs" style="color:#8b9198">规则</div><div class="stat-value">{reasoning.get("rule_count",0)}</div></div>
@@ -171,7 +206,7 @@ def generate_graph_html_v2(
 
 <div id="tab-ner" class="tab-content p-6">
 <h2 class="font-serif text-xl mb-6">NER 四方法对比</h2>
-<div class="grid grid-cols-2 gap-6" id="ner-grid">{ner_html}</div>
+<div class="grid grid-cols-2 gap-6" id="ner-grid">{ner_summary}{ner_cards}</div>
 </div>
 
 <div id="tab-analytics" class="tab-content p-6">
