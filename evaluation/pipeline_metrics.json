@@ -3,19 +3,19 @@
   "triple_node_count": 33,
   "triple_count": 90,
   "triple_source_distribution": {
-    "cooccurrence": 42,
-    "extracted": 43,
+    "cooccurrence": 45,
+    "extracted": 40,
     "inferred": 5
   },
   "relation_distribution": {
     "influenced": 10,
     "located_in": 6,
     "collaborated_with": 21,
-    "developed": 16,
+    "family_of": 3,
+    "developed": 17,
     "decrypted": 5,
     "studied_at": 9,
-    "worked_at": 13,
-    "family_of": 3,
+    "worked_at": 12,
     "born_in": 2,
     "codebreaking_contribution": 5
   },
