@@ -1,289 +1,40 @@
 {
   "linked_entity_count": 97,
-  "triple_node_count": 68,
-  "triple_count": 440,
+  "triple_node_count": 67,
+  "triple_count": 176,
   "triple_source_distribution": {
-    "cooccurrence": 55,
+    "cooccurrence": 58,
+    "dependency_path": 51,
     "extracted": 59,
-    "dependency_path": 54,
-    "inferred": 272
+    "inferred": 8
   },
   "relation_distribution": {
-    "influenced": 15,
+    "influenced": 17,
+    "decrypted": 8,
     "developed": 35,
-    "collaborated_with": 53,
-    "decrypted": 9,
+    "supervised": 6,
     "worked_at": 21,
-    "located_in": 7,
-    "supervised": 5,
+    "collaborated_with": 50,
+    "located_in": 8,
     "studied_at": 5,
     "born_in": 18,
-    "associated_with_place": 49,
-    "codebreaking_contribution": 9,
-    "indirect_influence": 70,
-    "shared_affiliation": 97,
-    "likely_colleague": 47
+    "codebreaking_contribution": 8
   },
   "nil_rate": 0.0648,
   "average_link_score": 0.9199,
-  "raw_orphan_node_ratio": 0.299,
-  "raw_center_component_ratio": 0.701,
+  "raw_orphan_node_ratio": 0.3093,
+  "raw_center_component_ratio": 0.6907,
   "projected_orphan_node_ratio": 0.0,
   "projected_center_component_ratio": 1.0,
-  "conflict_pair_ratio": 0.1676,
+  "conflict_pair_ratio": 0.0115,
   "conflicting_pairs": {
-    "person_alan_turing->concept_stored_program": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->concept_turing_machine": [
-      "developed",
-      "indirect_influence"
-    ],
-    "discovered_person_003->concept_artificial_intelligence": [
-      "developed",
-      "indirect_influence"
-    ],
-    "discovered_person_004->discovered_artifact_001": [
-      "developed",
-      "indirect_influence"
-    ],
-    "discovered_person_005->person_alan_turing": [
-      "influenced",
-      "likely_colleague"
-    ],
-    "discovered_person_011->artifact_enigma": [
-      "developed",
-      "indirect_influence"
-    ],
-    "discovered_person_032->concept_cryptanalysis": [
-      "developed",
-      "indirect_influence"
-    ],
-    "discovered_person_033->discovered_artifact_001": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->artifact_bombe": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->artifact_colossus": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->discovered_artifact_004": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->concept_decision_problem": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->discovered_artifact_001": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->discovered_artifact_002": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->discovered_artifact_005": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->concept_universal_computation": [
-      "developed",
-      "indirect_influence"
-    ],
     "person_alan_turing->event_world_war_ii": [
       "codebreaking_contribution",
-      "indirect_influence",
       "influenced"
-    ],
-    "person_alan_turing->person_john_von_neumann": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_alan_turing->person_alonzo_church": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_alonzo_church->concept_decision_problem": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alonzo_church->concept_turing_machine": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_jack_good->person_john_von_neumann": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_jack_good->discovered_artifact_002": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->person_joan_clarke": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_john_von_neumann->concept_stored_program": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_john_von_neumann->concept_universal_computation": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_john_von_neumann->discovered_artifact_001": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_max_newman->person_john_von_neumann": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_john_von_neumann->person_max_newman": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_max_newman->artifact_colossus": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_max_newman->concept_cryptanalysis": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_max_newman->concept_universal_computation": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_max_newman->discovered_artifact_002": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_max_newman->event_world_war_ii": [
-      "indirect_influence",
-      "influenced"
-    ],
-    "person_alan_turing->person_max_newman": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_max_newman->person_tommy_flowers": [
-      "influenced",
-      "likely_colleague"
-    ],
-    "person_alan_turing->person_tommy_flowers": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_alan_turing->concept_turing_test": [
-      "developed",
-      "indirect_influence"
-    ],
-    "discovered_person_010->place_cambridge": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "person_alan_turing->discovered_person_010": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "discovered_person_011->place_cambridge": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "discovered_person_025->discovered_artifact_001": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->discovered_place_002": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "person_alan_turing->place_cambridge": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "person_alan_turing->person_robin_gandy": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_alan_turing->discovered_artifact_003": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->discovered_artifact_006": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alonzo_church->discovered_artifact_001": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_ethel_sara_turing->place_cambridge": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "person_alan_turing->person_john_turing": [
-      "influenced",
-      "likely_colleague"
-    ],
-    "person_john_von_neumann->discovered_place_002": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "person_max_newman->place_cambridge": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "person_max_newman->person_john_turing": [
-      "collaborated_with",
-      "likely_colleague"
-    ],
-    "person_robin_gandy->place_cambridge": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "person_alan_turing->place_london": [
-      "associated_with_place",
-      "born_in"
-    ],
-    "person_tommy_flowers->place_london": [
-      "associated_with_place",
-      "born_in"
     ],
     "person_tommy_flowers->event_world_war_ii": [
       "codebreaking_contribution",
       "influenced"
-    ],
-    "discovered_person_013->concept_turing_machine": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_tommy_flowers->artifact_colossus": [
-      "developed",
-      "indirect_influence"
-    ],
-    "discovered_person_005->concept_turing_machine": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_alan_turing->artifact_ace": [
-      "developed",
-      "indirect_influence"
-    ],
-    "discovered_person_005->artifact_ace": [
-      "developed",
-      "indirect_influence"
-    ],
-    "person_jack_good->discovered_person_011": [
-      "likely_colleague",
-      "supervised"
     ]
   },
   "single_support_edge_ratio": 1.0,
@@ -307,15 +58,16 @@
   "projection": {
     "view": "focused",
     "raw_linked_entity_count": 97,
-    "raw_triple_node_count": 68,
-    "node_count": 68,
-    "edge_count": 440,
+    "raw_triple_node_count": 67,
+    "node_count": 67,
+    "edge_count": 176,
     "isolated_node_count": 0,
     "removed_linked_entities": [
       "artifact_manchester_mark1",
       "concept_church_turing_thesis",
       "concept_halting_problem",
       "concept_morphogenesis",
+      "discovered_artifact_005",
       "discovered_artifact_007",
       "discovered_organization_001",
       "discovered_person_006",
