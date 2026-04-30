@@ -210,7 +210,7 @@ def run_relation_stage(ctx: PipelineContext) -> None:
     pattern_triples = relation_ext.extract(ctx.linked_mentions, ctx.sentences)
     # 方法 2: 实体共现推断
     cooccur_triples = extract_by_cooccurrence(
-        ctx.linked_mentions, ctx.sentences, ctx.schema, min_cooccur=3
+        ctx.linked_mentions, ctx.sentences, ctx.schema, min_cooccur=2
     )
     # 方法 3: 依存句法路径
     deppath_triples = extract_by_dependency_path(
