@@ -7,7 +7,8 @@ from dataclasses import dataclass, field
 import jieba
 
 from .evaluation import compute_pipeline_metrics
-from .graph import build_graph_payload, generate_graph_html
+from .graph import build_graph_payload
+from .graph_v2 import generate_graph_html_v2
 from .ingestion import discover_book_files, extract_documents
 from .linking import link_mentions
 from .hmm_ner import HMMExtractor, HMMLearnExtractor
@@ -308,23 +309,39 @@ def run_graph_stage(ctx: PipelineContext) -> None:
     write_json(GRAPH_DIR / "projection.json", ctx.projection_stats)
     write_json(GRAPH_DIR / "graph_full_stats.json", full_graph_stats)
 
-    full_html = generate_graph_html(
-        full_graph_payload,
-        title="TuringKG Full Graph",
-        subtitle="Source: local EPUB/PDF biographies | full linked-entity overview",
-    )
-    graph_html_path = GRAPH_DIR / "turing_kg.html"
-    graph_html_path.write_text(full_html, encoding="utf-8")
-    (ROOT_DIR / "turing_kg.html").write_text(full_html, encoding="utf-8")
+    # Load NER comparison and reasoning for the multi-tab page
+    ner_comparison = ctx.crf_metrics  # Will be read from file
+    try:
+        import json
+        ner_comparison = json.loads((EVALUATION_DIR / "ner_comparison.json").read_text())
+    except Exception:
+        ner_comparison = {}
 
-    focused_html = generate_graph_html(
+    # Load snapshots
+    snapshot_data: list[dict] = []
+    try:
+        import json as _json
+        snap_dir = ROOT_DIR / "snapshots"
+        if snap_dir.exists():
+            for snap_path in sorted(snap_dir.iterdir()):
+                if snap_path.is_dir():
+                    snap_file = snap_path / "snapshot.json"
+                    if snap_file.exists():
+                        s = _json.loads(snap_file.read_text())
+                        snapshot_data.append(s)
+    except Exception:
+        pass
+
+    html = generate_graph_html_v2(
         ctx.graph_payload,
-        title="TuringKG Focus Graph",
-        subtitle="Source: local EPUB/PDF biographies | centered on Alan Turing",
+        ner_comparison=ner_comparison,
+        reasoning_summary=ctx.reasoning_summary,
+        snapshots=snapshot_data,
+        title="TuringKG",
     )
-    focused_graph_path = GRAPH_DIR / "turing_kg_focus.html"
-    focused_graph_path.write_text(focused_html, encoding="utf-8")
-    (ROOT_DIR / "turing_kg_focus.html").write_text(focused_html, encoding="utf-8")
+    html_path = GRAPH_DIR / "turing_kg.html"
+    html_path.write_text(html, encoding="utf-8")
+    (ROOT_DIR / "turing_kg.html").write_text(html, encoding="utf-8")
 
 
 def run_metrics_stage(ctx: PipelineContext) -> None:
