@@ -40,3 +40,37 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Task 1: Ch2 知识表示 — 扩充本体与关系模式
+
+**Date**: 2026-04-30
+**Task**: Task 1: Ch2 知识表示 — 扩充本体与关系模式
+**Branch**: `main`
+
+### Summary
+
+实体 21→44，关系 7→10 种，引入类型层级和实体属性。Schema 支持父类型匹配。新增 entity_discovery 半自动发现工具。三元组从 43 升至 110（+156%），涉及实体从 12 升至 28。已知：18 个概念/理论类实体仍未出现在关系中。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `05d70eb` | (see git log) |
+| `e2dbbfa` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
