@@ -34,3 +34,5 @@ raw_source/
 # OS
 .DS_Store
 Thumbs.db
+snapshots/
+!snapshots/task1-ch2-schema/snapshot.json

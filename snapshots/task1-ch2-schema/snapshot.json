@@ -1,0 +1,68 @@
+{
+  "task": "Task 1: Ch2 知识表示",
+  "date": "2026-04-30",
+  "summary": {
+    "document_count": 2,
+    "sentence_count": 14728,
+    "entity_mention_count": 8900,
+    "linked_mention_count": 8893,
+    "triple_count": 110,
+    "asserted_triple_count": 106,
+    "inferred_triple_count": 4,
+    "graph_html": "outputs/08_graph/turing_kg.html",
+    "documents_path": "outputs/01_extracted/documents.jsonl",
+    "sentences_path": "outputs/02_preprocessed/sentences.jsonl",
+    "triples_path": "outputs/05_relations/triples.jsonl",
+    "inferred_triples_path": "outputs/06_reasoning/inferred_triples.jsonl",
+    "store_path": "outputs/07_storage",
+    "metrics_path": "evaluation/pipeline_metrics.json",
+    "crf_metrics_path": "evaluation/crf_metrics.json",
+    "focused_graph_html": "outputs/08_graph/turing_kg_focus.html",
+    "raw_orphan_node_ratio": 0.3171,
+    "projected_center_component_ratio": 1.0,
+    "conflict_pair_ratio": 0.0465,
+    "single_support_edge_ratio": 0.6667,
+    "linked_boundary_alignment_rate": 0.9567,
+    "linked_fragmentation_mean": 1.3857,
+    "gazetteer_single_token_rate": 0.782,
+    "reasoning": {
+      "rule_count": 3,
+      "inferred_triple_count": 4,
+      "inferred_relation_distribution": {
+        "associated_with_place": 1,
+        "codebreaking_contribution": 3
+      },
+      "rules": [
+        {
+          "id": "R1_studied_at_place",
+          "template": "studied_at(Person, Organization) + located_in(Organization, Place) => associated_with_place(Person, Place)"
+        },
+        {
+          "id": "R1_worked_at_place",
+          "template": "worked_at(Person, Organization) + located_in(Organization, Place) => associated_with_place(Person, Place)"
+        },
+        {
+          "id": "R2_decrypted_enigma_wartime_contribution",
+          "template": "decrypted(Person, Artifact) => codebreaking_contribution(Person, World War II)"
+        }
+      ]
+    },
+    "storage": {
+      "entity_count": 46,
+      "relation_count": 12,
+      "asserted_triple_count": 106,
+      "inferred_triple_count": 4,
+      "fact_count": 110,
+      "paths": {
+        "entities": "outputs/07_storage/entities.jsonl",
+        "relations": "outputs/07_storage/relations.jsonl",
+        "facts_jsonl": "outputs/07_storage/facts.jsonl",
+        "facts_tsv": "outputs/07_storage/facts.tsv",
+        "rdf_triples": "outputs/07_storage/triples.nt",
+        "query_examples": "outputs/07_storage/query_examples.json"
+      }
+    }
+  },
+  "entity_count": 46,
+  "relation_count": 10
+}
