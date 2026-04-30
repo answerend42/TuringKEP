@@ -13,6 +13,7 @@ from .linking import link_mentions
 from .hmm_ner import HMMExtractor, HMMLearnExtractor
 from .ner import CrfResult, GazetteerExtractor, CRFExtractor, merge_mentions
 from .ner_comparison import compute_ner_comparison
+from .open_entity import discover_new_entities, extend_schema_with_discoveries
 from .paths import (
     EVALUATION_DIR,
     EXTRACTED_DIR,
@@ -51,6 +52,8 @@ class PipelineContext:
     hmm_result: CrfResult | None = None
     hmmlearn_result: CrfResult | None = None
     ner_method: str = "all"
+    discovered_entity_count: int = 0
+    discovered_mention_count: int = 0
     merged_mentions: list[MentionRecord] = field(default_factory=list)
     linked_mentions: list[MentionRecord] = field(default_factory=list)
     asserted_triples: list[TripleRecord] = field(default_factory=list)
@@ -127,6 +130,34 @@ def run_ner_stage(ctx: PipelineContext) -> None:
         ctx.merged_mentions,
     )
     write_json(EVALUATION_DIR / "ner_comparison.json", ner_report)
+
+    # 开放域实体发现：从文本中发现 schema 之外的新实体
+    new_entities = discover_new_entities(
+        ctx.documents, ctx.schema, min_confidence=0.60, max_new=50
+    )
+    if new_entities:
+        extended_schema = extend_schema_with_discoveries(ctx.schema, new_entities)
+        # 对新实体做第二轮 gazetteer 识别
+        gazetteer2 = GazetteerExtractor(extended_schema)
+        discovered_mentions = gazetteer2.extract(ctx.sentences)
+        # 标记来源
+        discovered_ids = {e.id for e in new_entities}
+        for m in discovered_mentions:
+            if m.entity_type and m.text not in {e.name for e in ctx.schema.entities}:
+                pass  # keep as-is
+        save_records(NER_DIR / "discovered_mentions.jsonl", discovered_mentions)
+        ctx.discovered_entity_count = len(new_entities)
+        ctx.discovered_mention_count = len(discovered_mentions)
+        # 将发现实体加入合并池
+        ctx.merged_mentions = merge_mentions(
+            ctx.merged_mentions,
+            discovered_mentions,
+        )
+        # 更新 schema 引用
+        ctx.schema = extended_schema
+    else:
+        ctx.discovered_entity_count = 0
+        ctx.discovered_mention_count = 0
 
 
 def run_linking_stage(ctx: PipelineContext) -> None:

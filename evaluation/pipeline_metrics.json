@@ -1,30 +1,31 @@
 {
-  "linked_entity_count": 42,
-  "triple_node_count": 28,
-  "triple_count": 112,
+  "linked_entity_count": 64,
+  "triple_node_count": 38,
+  "triple_count": 125,
   "triple_source_distribution": {
-    "extracted": 107,
-    "inferred": 5
+    "extracted": 119,
+    "inferred": 6
   },
   "relation_distribution": {
-    "developed": 40,
-    "born_in": 3,
-    "decrypted": 25,
-    "collaborated_with": 11,
-    "worked_at": 18,
+    "developed": 42,
+    "born_in": 4,
+    "studied_at": 1,
+    "decrypted": 26,
+    "collaborated_with": 16,
+    "worked_at": 19,
     "influenced": 7,
     "located_in": 1,
-    "supervised": 2,
+    "supervised": 3,
     "associated_with_place": 1,
-    "codebreaking_contribution": 4
+    "codebreaking_contribution": 5
   },
-  "nil_rate": 0.0923,
-  "average_link_score": 0.9086,
-  "raw_orphan_node_ratio": 0.3333,
-  "raw_center_component_ratio": 0.6667,
+  "nil_rate": 0.0714,
+  "average_link_score": 0.9147,
+  "raw_orphan_node_ratio": 0.4062,
+  "raw_center_component_ratio": 0.5625,
   "projected_orphan_node_ratio": 0.0,
   "projected_center_component_ratio": 1.0,
-  "conflict_pair_ratio": 0.0444,
+  "conflict_pair_ratio": 0.0345,
   "conflicting_pairs": {
     "person_alan_turing->place_london": [
       "associated_with_place",
@@ -35,30 +36,30 @@
       "influenced"
     ]
   },
-  "single_support_edge_ratio": 0.6809,
-  "average_edge_support": 2.383,
+  "single_support_edge_ratio": 0.7288,
+  "average_edge_support": 2.1017,
   "tokenizer_proxy": {
     "linked_mentions": {
-      "count": 9275,
-      "boundary_alignment_rate": 0.9585,
-      "fragmentation_mean": 1.4813,
-      "single_token_rate": 0.7639
+      "count": 12181,
+      "boundary_alignment_rate": 0.9455,
+      "fragmentation_mean": 1.3666,
+      "single_token_rate": 0.8202
     },
     "gazetteer_mentions": {
-      "count": 8861,
-      "boundary_alignment_rate": 0.9566,
-      "fragmentation_mean": 1.3811,
-      "single_token_rate": 0.782
+      "count": 11787,
+      "boundary_alignment_rate": 0.9437,
+      "fragmentation_mean": 1.2871,
+      "single_token_rate": 0.8355
     },
     "token_count": 366749,
     "average_sentence_tokens": 24.9015
   },
   "projection": {
     "view": "focused",
-    "raw_linked_entity_count": 42,
-    "raw_triple_node_count": 28,
-    "node_count": 28,
-    "edge_count": 47,
+    "raw_linked_entity_count": 64,
+    "raw_triple_node_count": 38,
+    "node_count": 36,
+    "edge_count": 59,
     "isolated_node_count": 0,
     "removed_linked_entities": [
       "artifact_manchester_mark1",
@@ -66,6 +67,20 @@
       "concept_decision_problem",
       "concept_halting_problem",
       "concept_morphogenesis",
+      "discovered_artifact_001",
+      "discovered_artifact_002",
+      "discovered_artifact_003",
+      "discovered_person_001",
+      "discovered_person_008",
+      "discovered_person_009",
+      "discovered_person_012",
+      "discovered_person_014",
+      "discovered_place_001",
+      "discovered_place_002",
+      "discovered_place_003",
+      "discovered_place_004",
+      "discovered_place_005",
+      "discovered_place_006",
       "event_dday",
       "person_christopher_morcom",
       "person_ethel_sara_turing",
