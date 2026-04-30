@@ -213,32 +213,55 @@ function switchTab(name) {{
 // === Main Graph (vis-network) ===
 const DATA = {data_json};
 const groupColors = {{
-  Person: '#c8553d', Organization: '#457b9d', Place: '#6a994e',
-  Artifact: '#8a5aab', Concept: '#dd8b2f', Event: '#264653', Theory: '#718096',
-  default: '#8d99ae',
+  Person: '#e06c50', Organization: '#5b9ecf', Place: '#7db85e',
+  Artifact: '#a87dc2', Concept: '#e8a838', Event: '#3d8b8b', Theory: '#8899aa',
+  default: '#8899aa',
 }};
 
-const shapeMap = {{ Person: 'dot', Organization: 'box', Place: 'diamond', Artifact: 'hexagon', Concept: 'triangle', Event: 'star', Theory: 'square', default: 'ellipse' }};
+const shapeMap = {{ Person: 'dot', Organization: 'box', Place: 'diamond', Artifact: 'hexagon', Concept: 'triangleDown', Event: 'star', Theory: 'square', default: 'dot' }};
 
 const visNodes = DATA.nodes.map(node => {{
   const color = groupColors[node.group] || groupColors.default;
+  const nodeSize = 8 + Math.min(node.value / 120, 28);
   return {{
-    ...node, shape: shapeMap[node.group] || shapeMap.default,
-    color: {{ background: color, border: color, highlight: {{ background: color, border: '#fff' }} }},
-    font: {{ color: '#dae2fd', size: 11 + Math.min(node.value/200, 8), face: 'Inter' }},
-    size: 8 + Math.min(node.value/150, 20),
+    ...node,
+    shape: shapeMap[node.group] || 'dot',
+    color: {{
+      background: color,
+      border: '#0b1326',
+      highlight: {{ background: '#fff', border: color }},
+      hover: {{ background: color, border: '#fff' }}
+    }},
+    font: {{ color: '#c1c7ce', size: Math.min(10 + nodeSize / 2.5, 18), face: 'Inter', strokeWidth: 0 }},
+    size: nodeSize,
+    borderWidth: 2,
+    borderWidthSelected: 3,
+    shadow: {{ enabled: true, color: 'rgba(0,0,0,0.5)', size: 8, x: 0, y: 2 }},
   }};
 }});
 
+// Edge colors by relation type
+const relationColors = {{
+  '出生于': '#e8a838', '逝世于': '#999', '就读于': '#5b9ecf', '工作于': '#5b9ecf',
+  '合作': '#7db85e', '提出或研制': '#a87dc2', '破译': '#e06c50',
+  '位于': '#5b9ecf', '影响': '#e8a838', '指导': '#3d8b8b',
+  default: '#5b9ecf'
+}};
+
 const visEdges = {data_json}.edges.map(edge => {{
   const isInferred = edge.source === 'inferred';
-  const isCooccur = !isInferred && edge.source !== 'extracted';
+  const relColor = relationColors[edge.label] || relationColors.default;
   return {{
-    ...edge, arrows: {{ to: {{ enabled: true }} }},
-    color: {{ color: isInferred ? '#6f4e7c' : isCooccur ? '#e07a5f' : '#9a8f82', highlight: '#98cdf2' }},
-    width: Math.min(0.5 + edge.value/4, 4),
-    dashes: isInferred || isCooccur,
-    smooth: {{ type: 'dynamic' }},
+    ...edge, arrows: {{ to: {{ enabled: true, scaleFactor: 0.6 }} }},
+    color: {{
+      color: isInferred ? 'rgba(111,78,124,0.5)' : relColor + '99',
+      highlight: '#fff',
+      hover: relColor,
+    }},
+    width: Math.max(0.6, Math.min(edge.value / 3, 5)),
+    dashes: isInferred,
+    smooth: {{ type: 'curvedCW', roundness: 0.15 }},
+    font: {{ color: '#8b9198', size: 9, align: 'middle', background: '#0b1326', strokeWidth: 0 }},
   }};
 }});
 
@@ -246,8 +269,19 @@ const container = document.getElementById('mynetwork');
 let network = null;
 if (container) {{
   network = new vis.Network(container, {{ nodes: new vis.DataSet(visNodes), edges: new vis.DataSet(visEdges) }}, {{
-    physics: {{ stabilization: {{ iterations: 200 }}, barnesHut: {{ gravitationalConstant: -3000, springLength: 120, springConstant: 0.02 }} }},
-    interaction: {{ hover: true, navigationButtons: true, keyboard: true }},
+    physics: {{
+      stabilization: {{ iterations: 250, fit: true }},
+      barnesHut: {{
+        gravitationalConstant: -5000,
+        centralGravity: 0.3,
+        springLength: 180,
+        springConstant: 0.015,
+        damping: 0.3,
+        avoidOverlap: 0.8,
+      }},
+    }},
+    interaction: {{ hover: true, navigationButtons: true, keyboard: true, zoomView: true, dragView: true }},
+    layout: {{ improvedLayout: true }},
   }});
   network.on('click', function(params) {{
     const insp = document.getElementById('inspector');
