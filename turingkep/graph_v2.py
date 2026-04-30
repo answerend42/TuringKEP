@@ -5,9 +5,8 @@ from __future__ import annotations
 import json
 from typing import Any
 
-VIS_JS_URL = (
-    "https://cdn.jsdelivr.net/npm/vis-network@9.1.6/standalone/umd/vis-network.min.js"
-)
+CYTOSCAPE_URL = "https://cdn.jsdelivr.net/npm/cytoscape@3.28.1/dist/cytoscape.min.js"
+CYTOSCAPE_DAGRE_URL = "https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.js"
 
 TAILWIND_CONFIG = """tailwind.config = {
   darkMode: "class",
@@ -122,8 +121,9 @@ def generate_graph_html_v2(
 <!-- Tab 1: 知识图谱 -->
 <div id="tab-graph" class="tab-content active">
   <div class="flex" style="height:calc(100vh - 140px)">
-    <!-- Left Sidebar: Legend -->
+    <!-- Left Sidebar: Legend + Search -->
     <aside class="p-4 overflow-y-auto" style="width:240px;background:#0f172a;border-right:1px solid #222a3d">
+      <input id="search-box" class="w-full px-3 py-2 mb-4 text-sm rounded" style="background:#0b1326;border:1px solid #222a3d;color:#dae2fd" placeholder="搜索节点..." oninput="searchNode(this.value)">
       <h3 class="text-xs font-semibold uppercase tracking-wider mb-4" style="color:#8b9198">实体类型</h3>
       {''.join(f'<div class="flex items-center gap-2 mb-2 text-sm"><span class="legend-dot" style="background:{{"Person":"#c8553d","Organization":"#457b9d","Place":"#6a994e","Artifact":"#8a5aab","Concept":"#dd8b2f","Event":"#264653","Theory":"#718096"}}.get("{t}","#8d99ae")}}"></span> {t}<span class="ml-auto" style="color:#8b9198">{c}</span></div>' for t,c in type_dist.most_common())}
       <hr class="my-4" style="border-color:#222a3d">
@@ -199,7 +199,8 @@ def generate_graph_html_v2(
   </div>
 </div>
 
-<script src="{VIS_JS_URL}"></script>
+<script src="{CYTOSCAPE_URL}"></script>
+<script src="{CYTOSCAPE_DAGRE_URL}"></script>
 <script>
 // Tab switching
 function switchTab(name) {{
@@ -210,7 +211,7 @@ function switchTab(name) {{
   if (name === 'graph') setTimeout(() => network && network.redraw(), 100);
 }}
 
-// === Main Graph (vis-network) ===
+// === Main Graph (Cytoscape.js) ===
 const DATA = {data_json};
 const groupColors = {{
   Person: '#e06c50', Organization: '#5b9ecf', Place: '#7db85e',
@@ -218,82 +219,83 @@ const groupColors = {{
   default: '#8899aa',
 }};
 
-const shapeMap = {{ Person: 'dot', Organization: 'box', Place: 'diamond', Artifact: 'hexagon', Concept: 'triangleDown', Event: 'star', Theory: 'square', default: 'dot' }};
+const shapeMap = {{ Person: 'ellipse', Organization: 'round-rectangle', Place: 'diamond', Artifact: 'hexagon', Concept: 'triangle', Event: 'star', Theory: 'vee', default: 'ellipse' }};
 
-const visNodes = DATA.nodes.map(node => {{
-  const color = groupColors[node.group] || groupColors.default;
-  const nodeSize = 8 + Math.min(node.value / 120, 28);
-  return {{
-    ...node,
-    shape: shapeMap[node.group] || 'dot',
-    color: {{
-      background: color,
-      border: '#0b1326',
-      highlight: {{ background: '#fff', border: color }},
-      hover: {{ background: color, border: '#fff' }}
-    }},
-    font: {{ color: '#c1c7ce', size: Math.min(10 + nodeSize / 2.5, 18), face: 'Inter', strokeWidth: 0 }},
-    size: nodeSize,
-    borderWidth: 2,
-    borderWidthSelected: 3,
-    shadow: {{ enabled: true, color: 'rgba(0,0,0,0.5)', size: 8, x: 0, y: 2 }},
-  }};
-}});
-
-// Edge colors by relation type
 const relationColors = {{
   '出生于': '#e8a838', '逝世于': '#999', '就读于': '#5b9ecf', '工作于': '#5b9ecf',
   '合作': '#7db85e', '提出或研制': '#a87dc2', '破译': '#e06c50',
-  '位于': '#5b9ecf', '影响': '#e8a838', '指导': '#3d8b8b',
-  default: '#5b9ecf'
+  '位于': '#5b9ecf', '影响': '#e8a838', '指导': '#3d8b8b', '亲属': '#e06c50',
+  '参与': '#3d8b8b', default: '#5b9ecf'
 }};
 
-const visEdges = {data_json}.edges.map(edge => {{
-  const isInferred = edge.source === 'inferred';
-  const relColor = relationColors[edge.label] || relationColors.default;
+// Build Cytoscape elements
+const cyNodes = DATA.nodes.map(n => {{
+  const c = groupColors[n.group] || groupColors.default;
+  const s = 20 + Math.min(n.value / 100, 40);
   return {{
-    ...edge, arrows: {{ to: {{ enabled: true, scaleFactor: 0.6 }} }},
-    color: {{
-      color: isInferred ? 'rgba(111,78,124,0.5)' : relColor + '99',
-      highlight: '#fff',
-      hover: relColor,
-    }},
-    width: Math.max(0.6, Math.min(edge.value / 3, 5)),
-    dashes: isInferred,
-    smooth: {{ type: 'curvedCW', roundness: 0.15 }},
-    font: {{ color: '#8b9198', size: 9, align: 'middle', background: '#0b1326', strokeWidth: 0 }},
+    data: {{ id: n.id, label: n.label, group: n.group, value: n.value, title: n.title || '' }},
+    classes: n.group.toLowerCase(),
+    style: {{ 'background-color': c, 'border-color': c, shape: shapeMap[n.group] || 'ellipse', width: s, height: s }}
   }};
 }});
 
-const container = document.getElementById('mynetwork');
-let network = null;
-if (container) {{
-  network = new vis.Network(container, {{ nodes: new vis.DataSet(visNodes), edges: new vis.DataSet(visEdges) }}, {{
-    physics: {{
-      stabilization: {{ iterations: 250, fit: true }},
-      barnesHut: {{
-        gravitationalConstant: -5000,
-        centralGravity: 0.3,
-        springLength: 180,
-        springConstant: 0.015,
-        damping: 0.3,
-        avoidOverlap: 0.8,
-      }},
-    }},
-    interaction: {{ hover: true, navigationButtons: true, keyboard: true, zoomView: true, dragView: true }},
-    layout: {{ improvedLayout: true }},
+const cyEdges = DATA.edges.map((e,i) => {{
+  const rc = relationColors[e.label] || relationColors.default;
+  const isInferred = e.source === 'inferred';
+  return {{
+    data: {{ id: 'e'+i, source: e.from, target: e.to, label: e.label, confidence: e.avg_confidence, sourceType: e.source, title: e.title || '' }},
+    style: {{ 'line-color': isInferred ? 'rgba(111,78,124,0.5)' : rc+'99', 'target-arrow-color': isInferred ? 'rgba(111,78,124,0.6)' : rc, width: Math.max(0.8, Math.min(e.value/3, 4)), 'line-style': isInferred ? 'dashed' : 'solid', 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.8 }}
+  }};
+}});
+
+document.addEventListener('DOMContentLoaded', function() {{
+  const cy = cytoscape({{
+    container: document.getElementById('mynetwork'),
+    elements: [...cyNodes, ...cyEdges],
+    style: [
+      {{ selector: 'node', style: {{ 'label': 'data(label)', 'color': '#dae2fd', 'font-size': 10, 'font-family': 'Inter', 'text-valign': 'bottom', 'text-halign': 'center', 'text-margin-y': 6, 'border-width': 2, 'border-opacity': 1, 'text-background-color': '#0b1326', 'text-background-opacity': 0.6, 'text-background-padding': 2, 'text-wrap': 'wrap', 'text-max-width': 80 }} }},
+      {{ selector: 'edge', style: {{ 'label': 'data(label)', 'color': '#8b9198', 'font-size': 8, 'font-family': 'Inter', 'text-rotation': 'autorotate', 'text-background-color': '#0b1326', 'text-background-opacity': 0.6, 'text-background-padding': 1 }} }},
+      {{ selector: '.person', style: {{ 'background-color': '#e06c50', 'border-color': '#e06c50' }} }},
+      {{ selector: '.organization', style: {{ 'background-color': '#5b9ecf', 'border-color': '#5b9ecf' }} }},
+      {{ selector: '.place', style: {{ 'background-color': '#7db85e', 'border-color': '#7db85e' }} }},
+      {{ selector: '.artifact', style: {{ 'background-color': '#a87dc2', 'border-color': '#a87dc2' }} }},
+      {{ selector: '.concept', style: {{ 'background-color': '#e8a838', 'border-color': '#e8a838' }} }},
+      {{ selector: '.event', style: {{ 'background-color': '#3d8b8b', 'border-color': '#3d8b8b' }} }},
+      {{ selector: '.theory', style: {{ 'background-color': '#8899aa', 'border-color': '#8899aa' }} }},
+      {{ selector: 'node:selected', style: {{ 'border-color': '#fff', 'border-width': 3, 'text-outline-color': '#fff', 'text-outline-width': 1 }} }},
+      {{ selector: 'edge:selected', style: {{ 'line-color': '#98cdf2', 'target-arrow-color': '#98cdf2', 'width': 4 }} }},
+    ],
+    layout: {{ name: 'dagre', rankDir: 'LR', spacingFactor: 0.9, nodeDimensionsIncludeLabels: true }},
+    wheelSensitivity: 0.3,
   }});
-  network.on('click', function(params) {{
+
+  // Click inspector
+  cy.on('tap', 'node', function(evt) {{
+    const node = evt.target;
     const insp = document.getElementById('inspector');
-    if (params.nodes.length) {{
-      const node = DATA.nodes.find(n => n.id === params.nodes[0]);
-      if (node) insp.innerHTML = `<h3 class=\"font-serif text-lg\">${{node.label}}</h3><p class=\"text-sm mt-2\" style=\"color:#8b9198\">${{node.group}} — ${{node.value}} mentions</p><div class=\"mt-3 text-xs\" style=\"color:#c1c7ce\">${{node.title || ''}}</div>`;
-    }} else if (params.edges.length) {{
-      const edge = DATA.edges[params.edges[0]];
-      if (edge) insp.innerHTML = `<h3 class=\"font-serif text-lg\">${{edge.label}}</h3><p class=\"text-sm mt-2\">${{DATA.nodes.find(n=>n.id===edge.from)?.label || edge.from}} → ${{DATA.nodes.find(n=>n.id===edge.to)?.label || edge.to}}</p><p class=\"text-xs mt-1\" style=\"color:#8b9198\">confidence: ${{(edge.avg_confidence*100).toFixed(0)}}% · source: ${{edge.source}}</p><div class=\"mt-2 text-xs\" style=\"color:#c1c7ce\">${{edge.title || ''}}</div>`;
-    }}
+    insp.innerHTML = `<h3 class="font-serif text-lg mb-1">${{node.data('label')}}</h3><span class="chip text-xs" style="background:${{groupColors[node.data('group')]}}33;color:${{groupColors[node.data('group')]}}">${{node.data('group')}}</span><p class="text-sm mt-3" style="color:#8b9198">${{node.data('value')}} mentions</p><div class="mt-3 text-xs" style="color:#c1c7ce">${{node.data('title')}}</div>`;
   }});
-}}
+  cy.on('tap', 'edge', function(evt) {{
+    const edge = evt.target;
+    const src = cy.getElementById(edge.data('source'));
+    const tgt = cy.getElementById(edge.data('target'));
+    const insp = document.getElementById('inspector');
+    insp.innerHTML = `<h3 class="font-serif text-lg mb-1">${{edge.data('label')}}</h3><p class="text-sm mt-2">${{src.data('label')}} → ${{tgt.data('label')}}</p><p class="text-xs mt-1" style="color:#8b9198">confidence: ${{(edge.data('confidence')*100).toFixed(0)}}% · ${{edge.data('sourceType')}}</p><div class="mt-2 text-xs" style="color:#c1c7ce">${{edge.data('title')}}</div>`;
+  }});
+  cy.on('tap', function(evt) {{ if (evt.target === cy) document.getElementById('inspector').innerHTML = '<p class="text-sm" style="color:#8b9198">点击节点或边查看详情</p>'; }});
+
+  // Search
+  window.searchNode = function(query) {{
+    cy.nodes().removeClass('dimmed');
+    if (!query || query.length < 1) return;
+    const q = query.toLowerCase();
+    let found = cy.nodes().filter(n => n.data('label').toLowerCase().includes(q) || n.data('id').toLowerCase().includes(q));
+    cy.nodes().difference(found).addClass('dimmed');
+    if (found.length) {{ cy.animate({{ center: {{ eles: found }} }}); found.addClass('highlighted'); }}
+  }};
+  cy.style().selector('.dimmed').style({{ 'opacity': 0.15 }}).update();
+  cy.style().selector('.highlighted').style({{ 'border-color': '#fff', 'border-width': 3 }}).update();
+}});
 
 // === Tab 2: Relations ===
 (function() {{
