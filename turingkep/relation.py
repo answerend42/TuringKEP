@@ -22,10 +22,10 @@ def _entity_passes_tags(entity: EntityDefinition, required_tags: list[str]) -> b
 
 
 def _entity_passes_types(
-    mention: MentionRecord, relation: RelationDefinition, role: str
+    mention: MentionRecord, relation: RelationDefinition, role: str, schema: DomainSchema
 ) -> bool:
     valid_types = relation.subject_types if role == "subject" else relation.object_types
-    return mention.entity_type in valid_types
+    return schema.type_matches(mention.entity_type, valid_types)
 
 
 def _gap_to_trigger(
@@ -61,6 +61,7 @@ def _trigger_matches(sentence_text: str, relation: RelationDefinition) -> list[T
 def _candidate_mentions(
     mentions: list[MentionRecord],
     entity_by_id: dict[str, EntityDefinition],
+    schema: DomainSchema,
     relation: RelationDefinition,
     role: str,
     trigger: TriggerMatch,
@@ -71,7 +72,7 @@ def _candidate_mentions(
     for mention in mentions:
         if mention.is_nil or mention.linked_entity_id is None:
             continue
-        if not _entity_passes_types(mention, relation, role):
+        if not _entity_passes_types(mention, relation, role, schema):
             continue
         entity = entity_by_id[mention.linked_entity_id]
         if not _entity_passes_tags(entity, required_tags):
@@ -103,9 +104,10 @@ def _build_symmetric_triple(
     sentence_record: SentenceRecord,
     mentions: list[MentionRecord],
     entity_by_id: dict[str, EntityDefinition],
+    schema: DomainSchema,
     trigger: TriggerMatch,
 ) -> TripleRecord | None:
-    ranked = _candidate_mentions(mentions, entity_by_id, relation, "subject", trigger)
+    ranked = _candidate_mentions(mentions, entity_by_id, schema, relation, "subject", trigger)
     usable = [mention for _, mention in ranked]
     for index, subject in enumerate(usable):
         for obj in usable[index + 1 :]:
@@ -142,10 +144,11 @@ def _build_directional_triple(
     sentence_record: SentenceRecord,
     mentions: list[MentionRecord],
     entity_by_id: dict[str, EntityDefinition],
+    schema: DomainSchema,
     trigger: TriggerMatch,
 ) -> TripleRecord | None:
-    subject_candidates = _candidate_mentions(mentions, entity_by_id, relation, "subject", trigger)
-    object_candidates = _candidate_mentions(mentions, entity_by_id, relation, "object", trigger)
+    subject_candidates = _candidate_mentions(mentions, entity_by_id, schema, relation, "subject", trigger)
+    object_candidates = _candidate_mentions(mentions, entity_by_id, schema, relation, "object", trigger)
 
     for _, subject in subject_candidates:
         if subject.linked_entity_id is None:
@@ -231,9 +234,9 @@ def extract_relation_triples(
             sentence_record = sentence_map[sentence_id]
             for trigger in _trigger_matches(sentence_record.text, relation):
                 triple = (
-                    _build_symmetric_triple(relation, sentence_record, mentions, entity_by_id, trigger)
+                    _build_symmetric_triple(relation, sentence_record, mentions, entity_by_id, schema, trigger)
                     if relation.symmetric
-                    else _build_directional_triple(relation, sentence_record, mentions, entity_by_id, trigger)
+                    else _build_directional_triple(relation, sentence_record, mentions, entity_by_id, schema, trigger)
                 )
                 if triple is None:
                     continue
