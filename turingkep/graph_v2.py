@@ -205,7 +205,8 @@ def generate_graph_html_v2(
 </div>
 
 <div id="tab-ner" class="tab-content p-6">
-<h2 class="font-serif text-xl mb-6">NER 四方法对比</h2>
+<h2 class="font-serif text-xl mb-2">NER 四方法对比</h2>
+<p class="text-sm mb-6" style="color:#8b9198">最终流水线使用 <strong style="color:#98cdf2">四种方法合并</strong>（Gazetteer 词典 + CRF 条件随机场 + HMM 隐马尔可夫手写 + HMM hmmlearn），最长匹配去重后作为实体识别输出。</p>
 <div class="grid grid-cols-2 gap-6" id="ner-grid">{ner_summary}{ner_cards}</div>
 </div>
 
@@ -252,7 +253,9 @@ var cy = cytoscape({{
   style: [
     {{selector:'node',style:{{'label':'data(label)','color':'#dae2fd','font-size':10,'font-family':'Inter','text-valign':'bottom','text-halign':'center','text-margin-y':6,'border-width':2,'text-background-color':'#0b1326','text-background-opacity':0.6,'text-background-padding':2}}}},
 {type_css}
-    {{selector:'edge',style:{{'line-color':'rgba(91,158,207,0.4)','target-arrow-shape':'triangle','target-arrow-color':'rgba(91,158,207,0.6)','curve-style':'bezier','width':1}}}},
+    {{selector:'edge',style:{{'line-color':'rgba(91,158,207,0.4)','target-arrow-shape':'triangle','target-arrow-color':'rgba(91,158,207,0.6)','curve-style':'bezier','width':1,'label':'data(label)','color':'#8b9198','font-size':8,'text-rotation':'autorotate','text-background-color':'#0b1326','text-background-opacity':0.6,'text-background-padding':1}}}},
+    {{selector:'.neighbor',style:{{'opacity':1}}}},
+    {{selector:'.hidden-edge',style:{{'display':'none'}}}},
     {{selector:'node:selected',style:{{'border-color':'#fff','border-width':3}}}},
     {{selector:'.dimmed',style:{{'opacity':0.15}}}},
   ],
@@ -262,14 +265,25 @@ var cy = cytoscape({{
 cy.on('tap','node',function(evt){{
   var n = evt.target; var i = document.getElementById('inspector');
   var c = gc[n.data('group')]||'#8899aa';
-  i.innerHTML = '<h3 class=\"font-serif text-lg mb-1\">'+n.data('label')+'</h3><span class=\"chip text-xs\" style=\"background:'+c+'33;color:'+c+'\">'+n.data('group')+'</span><p class=\"text-sm mt-3\" style=\"color:#8b9198\">'+n.data('value')+' mentions</p><div class=\"mt-3 text-xs\" style=\"color:#c1c7ce\">'+(n.data('title')||'')+'</div>';
+  i.innerHTML = '<h3 class=\"font-serif text-lg mb-1\">'+n.data('label')+'</h3><span class=\"chip text-xs\" style=\"background:'+c+'33;color:'+c+'\">'+n.data('group')+'</span><p class=\"text-sm mt-3\" style=\"color:#8b9198\">'+n.data('value')+' mentions</p><div class=\"mt-3 text-xs\" style=\"color:#c1c7ce\">'+(n.data('title')||'')+'</div><p class=\"text-xs mt-2\" style=\"color:#98cdf2;cursor:pointer\" onclick=\"resetHighlight()\">← 显示全部</p>';
+  // Isolate neighborhood
+  var neighborhood = n.closedNeighborhood();
+  cy.elements().addClass('dimmed');
+  neighborhood.removeClass('dimmed');
+  neighborhood.edges().removeClass('hidden-edge');
+  cy.elements().difference(neighborhood).edges().addClass('hidden-edge');
 }});
 cy.on('tap','edge',function(evt){{
   var e = evt.target, s = cy.getElementById(e.data('source')), t = cy.getElementById(e.data('target'));
   var i = document.getElementById('inspector');
   i.innerHTML = '<h3 class=\"font-serif text-lg mb-1\">'+e.data('label')+'</h3><p class=\"text-sm mt-2\">'+(s?s.data('label'):e.data('source'))+' → '+(t?t.data('label'):e.data('target'))+'</p><p class=\"text-xs mt-1\" style=\"color:#8b9198\">'+(e.data('sourceType')||'')+' &middot; conf:'+Math.round((e.data('confidence')||0)*100)+'%</p><div class=\"mt-2 text-xs\" style=\"color:#c1c7ce\">'+(e.data('title')||'')+'</div>';
 }});
-cy.on('tap',function(evt){{ if(evt.target===cy) document.getElementById('inspector').innerHTML='<p class=\"text-sm\" style=\"color:#8b9198\">点击节点或边查看详情</p>'; }});
+window.resetHighlight = function() {{
+  cy.elements().removeClass('dimmed');
+  cy.elements().removeClass('hidden-edge');
+  document.getElementById('inspector').innerHTML='<p class=\"text-sm\" style=\"color:#8b9198\">点击节点或边查看详情</p>';
+}};
+cy.on('tap',function(evt){{ if(evt.target===cy) resetHighlight(); }});
 
 window.searchNode = function(q) {{
   if (typeof cy==='undefined') return;
