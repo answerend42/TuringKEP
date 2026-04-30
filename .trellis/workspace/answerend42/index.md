@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 9
+- **Total Sessions**: 10
 - **Last Active**: 2026-04-30
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~311 | Active |
+| `journal-1.md` | ~344 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 10 | 2026-04-30 | Task 7: 实体消歧迭代 — 自引用检测清除垃圾实体 | `7503bec` | `main` |
 | 9 | 2026-04-30 | 修复: 移除间接影响规则 | HEAD | `main` |
 | 8 | 2026-04-30 | Task 6: Ch5 实体消歧 — TF-IDF聚类 + 碎片过滤 | `a09ad86` | `main` |
 | 7 | 2026-04-30 | Task 5: Ch9 知识推理 — 8 条规则 + 冲突消解 | `4b60878` | `main` |
