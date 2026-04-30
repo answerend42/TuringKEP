@@ -74,3 +74,39 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: Task 1 补充: 段落级 TF-IDF + 停用词表 + 迭代日志
+
+**Date**: 2026-04-30
+**Task**: Task 1 补充: 段落级 TF-IDF + 停用词表 + 迭代日志
+**Branch**: `main`
+
+### Summary
+
+Task 1 Ch2 知识表示：实体 21→46，关系 7→10，三元组 43→110。entity_discovery 演进至 v3（段落级 TF-IDF + POS + 共现增强），停用词表改为 goto456/stopwords。建立 experiments/iteration-journal.md 和 snapshots/ 快照系统。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `05d70eb` | (see git log) |
+| `e2dbbfa` | (see git log) |
+| `fc4ba69` | (see git log) |
+| `143673e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
