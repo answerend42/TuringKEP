@@ -223,30 +223,33 @@ const groupColors = {{
 
 const shapeMap = {{ Person: 'ellipse', Organization: 'round-rectangle', Place: 'diamond', Artifact: 'hexagon', Concept: 'triangle', Event: 'star', Theory: 'vee', default: 'ellipse' }};
 
-const relationColors = {{
-  '出生于': '#e8a838', '逝世于': '#999', '就读于': '#5b9ecf', '工作于': '#5b9ecf',
-  '合作': '#7db85e', '提出或研制': '#a87dc2', '破译': '#e06c50',
-  '位于': '#5b9ecf', '影响': '#e8a838', '指导': '#3d8b8b', '亲属': '#e06c50',
-  '参与': '#3d8b8b', default: '#5b9ecf'
+// Relation colors (hex → rgba for alpha support in Cytoscape)
+const relColors = {{
+  '出生于': 'rgba(232,168,56,0.6)', '逝世于': 'rgba(153,153,153,0.6)',
+  '就读于': 'rgba(91,158,207,0.6)', '工作于': 'rgba(91,158,207,0.6)',
+  '合作': 'rgba(125,184,94,0.6)', '提出或研制': 'rgba(168,125,194,0.6)',
+  '破译': 'rgba(224,108,80,0.6)', '位于': 'rgba(91,158,207,0.6)',
+  '影响': 'rgba(232,168,56,0.6)', '指导': 'rgba(61,139,139,0.6)',
+  '亲属': 'rgba(224,108,80,0.6)', '参与': 'rgba(61,139,139,0.6)',
+  default: 'rgba(91,158,207,0.6)'
 }};
 
 // Build Cytoscape elements
 const cyNodes = DATA.nodes.map(n => {{
-  const c = groupColors[n.group] || groupColors.default;
   const s = 20 + Math.min(n.value / 100, 40);
   return {{
     data: {{ id: n.id, label: n.label, group: n.group, value: n.value, title: n.title || '' }},
     classes: n.group.toLowerCase(),
-    style: {{ 'background-color': c, 'border-color': c, shape: shapeMap[n.group] || 'ellipse', width: s, height: s }}
   }};
 }});
 
 const cyEdges = DATA.edges.map((e,i) => {{
-  const rc = relationColors[e.label] || relationColors.default;
+  const rc = relColors[e.label] || relColors.default;
   const isInferred = e.source === 'inferred';
+  const alpha = isInferred ? 'rgba(111,78,124,0.4)' : rc;
   return {{
     data: {{ id: 'e'+i, source: e.from, target: e.to, label: e.label, confidence: e.avg_confidence, sourceType: e.source, title: e.title || '' }},
-    style: {{ 'line-color': isInferred ? 'rgba(111,78,124,0.5)' : rc+'99', 'target-arrow-color': isInferred ? 'rgba(111,78,124,0.6)' : rc, width: Math.max(0.8, Math.min(e.value/3, 4)), 'line-style': isInferred ? 'dashed' : 'solid', 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.8 }}
+    style: {{ 'line-color': alpha, 'target-arrow-color': alpha, width: Math.max(0.8, Math.min(e.value/3, 4)), 'line-style': isInferred ? 'dashed' : 'solid', 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.8 }}
   }};
 }});
 
@@ -254,7 +257,7 @@ const cy = cytoscape({{
     container: document.getElementById('mynetwork'),
     elements: [...cyNodes, ...cyEdges],
     style: [
-      {{ selector: 'node', style: {{ 'label': 'data(label)', 'color': '#dae2fd', 'font-size': 10, 'font-family': 'Inter', 'text-valign': 'bottom', 'text-halign': 'center', 'text-margin-y': 6, 'border-width': 2, 'border-opacity': 1, 'text-background-color': '#0b1326', 'text-background-opacity': 0.6, 'text-background-padding': 2, 'text-wrap': 'wrap', 'text-max-width': 80 }} }},
+      {{ selector: 'node', style: {{ 'label': 'data(label)', 'color': '#dae2fd', 'font-size': 10, 'font-family': 'Inter', 'text-valign': 'bottom', 'text-halign': 'center', 'text-margin-y': 6, 'border-width': 2, 'border-opacity': 1, 'text-background-color': '#0b1326', 'text-background-opacity': 0.6, 'text-background-padding': 2, 'text-wrap': 'wrap', 'text-max-width': 80, 'width': 20, 'height': 20 }} }},
       {{ selector: 'edge', style: {{ 'label': 'data(label)', 'color': '#8b9198', 'font-size': 8, 'font-family': 'Inter', 'text-rotation': 'autorotate', 'text-background-color': '#0b1326', 'text-background-opacity': 0.6, 'text-background-padding': 1 }} }},
       {{ selector: '.person', style: {{ 'background-color': '#e06c50', 'border-color': '#e06c50' }} }},
       {{ selector: '.organization', style: {{ 'background-color': '#5b9ecf', 'border-color': '#5b9ecf' }} }},
